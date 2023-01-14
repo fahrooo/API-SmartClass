@@ -28,6 +28,9 @@ const Users = db.define(
     password: {
       type: DataTypes.TEXT,
     },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+    },
     refresh_token: {
       type: DataTypes.TEXT,
     },
