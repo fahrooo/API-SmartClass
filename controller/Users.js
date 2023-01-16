@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { Op, where } from "sequelize";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import emailExistence from "email-existence";
 
 dotenv.config();
 
@@ -45,50 +46,67 @@ export const Register = async (req, res) => {
     });
   }
 
-  try {
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    });
+  emailExistence.check(email, function (error, response) {
+    try {
+      if (response === true) {
+        const transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD,
+          },
+        });
 
-    const mail_config = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Verifikasi Email",
-      text: `Klik link di bawah ini untuk verifikasi email :
-      ${process.env.BASE_URL}/${nik}/veryfyemail/${hashPassword}`,
-    };
+        const mail_config = {
+          from: process.env.EMAIL_USER,
+          to: email,
+          subject: "Verifikasi Email",
+          text: `Klik link di bawah ini untuk verifikasi email :
+          ${process.env.BASE_URL}/${nik}/veryfyemail/${hashPassword}`,
+        };
 
-    transporter.sendMail(mail_config, function (err, info) {
-      if (err) {
-        console.log(err);
+        transporter.sendMail(mail_config, async function (err, info) {
+          if (!err) {
+            const users = await Users.create({
+              nama: nama,
+              nik: nik,
+              unit: unit,
+              jabatan: jabatan,
+              role: "Peserta",
+              email: email,
+              password: hashPassword,
+              is_active: false,
+            });
+
+            return res.status(200).json({
+              status: 200,
+              msg: "Silahkan verifikasi email",
+              data: { nama, email },
+            });
+          } else {
+            return res.status(400).json({
+              status: 400,
+              msg: "Email not sent",
+              data: err.message,
+            });
+          }
+        });
+      } else {
+        return res.status(400).json({
+          status: 400,
+          msg: "Email Incorrect",
+        });
       }
-    });
-
-    const users = await Users.create({
-      nama: nama,
-      nik: nik,
-      unit: unit,
-      jabatan: jabatan,
-      role: "Peserta",
-      email: email,
-      password: hashPassword,
-      is_active: false,
-    });
-
-    res.status(200).json({
-      status: 200,
-      msg: "Silahkan verifikasi email",
-      data: { nama, email },
-    });
-  } catch (error) {
-    console.log(error);
-  }
+    } catch (error) {
+      return res.status(500).json({
+        status: 500,
+        msg: "Internal Server Error",
+        error: error.message,
+      });
+    }
+  });
 };
 
 export const sendVeryfyEmail = async (req, res) => {
