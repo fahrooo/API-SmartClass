@@ -13,8 +13,11 @@ export const Register = async (req, res) => {
 
   if (password !== confPassword) {
     return res
-      .status(400)
-      .json({ message: "Password dan Confirm Password Tidak Sama" });
+      .status(200)
+      .json({
+        status: 400,
+        message: "Password dan Confirm Password Tidak Sama",
+      });
   }
 
   const salt = await bcrypt.genSalt();
@@ -33,16 +36,16 @@ export const Register = async (req, res) => {
   });
 
   if (checkNikUser.length > 0) {
-    return res.status(400).json({
+    return res.status(200).json({
       status: 400,
-      message: "NIK already exists",
+      message: "NIK already exist",
     });
   }
 
   if (checkEmailUser.length > 0) {
-    return res.status(400).json({
+    return res.status(200).json({
       status: 400,
-      message: "Email already exists",
+      message: "Email already exist",
     });
   }
 
@@ -86,7 +89,7 @@ export const Register = async (req, res) => {
               data: { nama, email },
             });
           } else {
-            return res.status(400).json({
+            return res.status(200).json({
               status: 400,
               message: "Email not sent",
               data: err.message,
@@ -94,9 +97,9 @@ export const Register = async (req, res) => {
           }
         });
       } else {
-        return res.status(400).json({
+        return res.status(200).json({
           status: 400,
-          message: "Email Incorrect",
+          message: "Email incorrect",
         });
       }
     } catch (error) {
@@ -138,8 +141,7 @@ export const sendVeryfyEmail = async (req, res) => {
         from: process.env.EMAIL_USER,
         to: email,
         subject: "Verifikasi Email",
-        text: `Klik link di bawah ini untuk verifikasi email :
-        ${process.env.BASE_URL}/${nik}/veryfyemail/${hashPassword}`,
+        text: `Klik link di bawah ini untuk verifikasi email : ${process.env.BASE_URL}/${nik}/verifyemail/${hashPassword}`,
       };
 
       transporter.sendMail(mail_config, function (err, info) {
@@ -158,7 +160,7 @@ export const sendVeryfyEmail = async (req, res) => {
   }
 };
 
-export const veryfyEmail = async (req, res) => {
+export const verifyEmail = async (req, res) => {
   const nik = req.params.nik;
   const token = req.params.token;
   try {
@@ -182,9 +184,14 @@ export const veryfyEmail = async (req, res) => {
         status: 201,
         message: "Register Berhasil",
       });
+    } else {
+      return res.status(200).json({
+        status: 400,
+        message: "Register Gagal",
+      });
     }
   } catch (error) {
-    return res.status(500).json({ status: 500, message: error });
+    return res.status(500).json({ status: 500, message: error.message });
   }
 };
 
@@ -249,7 +256,10 @@ export const Login = async (req, res) => {
       accessToken,
     });
   } catch (error) {
-    res.status(404).json({ message: "Email not found" });
+    res.status(404).json({
+      status: 404,
+      message: "Email not found",
+    });
   }
 };
 
@@ -281,7 +291,9 @@ export const Logout = async (req, res) => {
   );
 
   res.clearCookie("refreshToken");
-  return res.status(200).json({ status: 200, message: "Clear Token Successful" });
+  return res
+    .status(200)
+    .json({ status: 200, message: "Clear Token Successful" });
 };
 
 export const getUsers = async (req, res) => {

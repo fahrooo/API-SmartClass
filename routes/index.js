@@ -6,8 +6,8 @@ import {
   Logout,
   putUsers,
   deleteUsers,
-  veryfyEmail,
   sendVeryfyEmail,
+  verifyEmail,
 } from "../controller/Users.js";
 
 import { getUnits } from "../controller/Unit.js";
@@ -25,7 +25,7 @@ router.post("/register", Register);
 router.post("/login", Login);
 router.get("/token", refreshToken);
 router.delete("/logout", Logout);
-router.get("/:nik/veryfyemail/:token", veryfyEmail);
+router.get("/:nik/verifyemail/:token", verifyEmail);
 router.post("/sendveryfyemail", sendVeryfyEmail);
 
 //CRUD Users
