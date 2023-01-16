@@ -14,7 +14,7 @@ export const Register = async (req, res) => {
   if (password !== confPassword) {
     return res
       .status(400)
-      .json({ msg: "Password dan Confirm Password Tidak Sama" });
+      .json({ message: "Password dan Confirm Password Tidak Sama" });
   }
 
   const salt = await bcrypt.genSalt();
@@ -82,13 +82,13 @@ export const Register = async (req, res) => {
 
             return res.status(200).json({
               status: 200,
-              msg: "Silahkan verifikasi email",
+              message: "Silahkan verifikasi email",
               data: { nama, email },
             });
           } else {
             return res.status(400).json({
               status: 400,
-              msg: "Email not sent",
+              message: "Email not sent",
               data: err.message,
             });
           }
@@ -96,13 +96,13 @@ export const Register = async (req, res) => {
       } else {
         return res.status(400).json({
           status: 400,
-          msg: "Email Incorrect",
+          message: "Email Incorrect",
         });
       }
     } catch (error) {
       return res.status(500).json({
         status: 500,
-        msg: "Internal Server Error",
+        message: "Internal Server Error",
         error: error.message,
       });
     }
@@ -205,7 +205,7 @@ export const Login = async (req, res) => {
     const match = await bcrypt.compare(req.body.password, user[0].password);
 
     if (!match) {
-      return res.status(400).json({ status: 400, msg: "Wrong Password" });
+      return res.status(400).json({ status: 400, message: "Wrong Password" });
     }
 
     const userId = user[0].id;
@@ -249,14 +249,14 @@ export const Login = async (req, res) => {
       accessToken,
     });
   } catch (error) {
-    res.status(404).json({ msg: "Email not found" });
+    res.status(404).json({ message: "Email not found" });
   }
 };
 
 export const Logout = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
-    return res.status(404).json({ status: 404, msg: "Token Not Found" });
+    return res.status(404).json({ status: 404, message: "Token Not Found" });
   }
 
   const user = await Users.findAll({
@@ -281,7 +281,7 @@ export const Logout = async (req, res) => {
   );
 
   res.clearCookie("refreshToken");
-  return res.status(200).json({ status: 200, msg: "Clear Token Successful" });
+  return res.status(200).json({ status: 200, message: "Clear Token Successful" });
 };
 
 export const getUsers = async (req, res) => {
@@ -331,7 +331,7 @@ export const getUsers = async (req, res) => {
 
     res.status(users.length ? 200 : 404).json({
       status: users.length ? 200 : 404,
-      msg: users.length ? "Data Found" : "Data Not Found",
+      message: users.length ? "Data Found" : "Data Not Found",
       data: users.length ? users : null,
       page: page + 1,
       limit: limit,
@@ -343,7 +343,7 @@ export const getUsers = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       status: 500,
-      msg: "Internal Server Error",
+      message: "Internal Server Error",
       data: null,
     });
   }
@@ -374,14 +374,14 @@ export const putUsers = async (req, res) => {
 
       res.status(200).json({
         status: 200,
-        msg: "Data Updated Successfully",
+        message: "Data Updated Successfully",
         data: { ...req.body },
       });
     } else {
-      res.status(404).json({ status: 404, msg: "Data Not Found" });
+      res.status(404).json({ status: 404, message: "Data Not Found" });
     }
   } catch (error) {
-    res.status(500).json({ status: 500, msg: error.message });
+    res.status(500).json({ status: 500, message: error.message });
   }
 };
 
@@ -405,12 +405,12 @@ export const deleteUsers = async (req, res) => {
 
       res.status(200).json({
         status: 200,
-        msg: "Data Deleted successfully",
+        message: "Data Deleted successfully",
       });
     } else {
-      res.status(404).json({ status: 404, msg: "Data Not Found" });
+      res.status(404).json({ status: 404, message: "Data Not Found" });
     }
   } catch (error) {
-    res.status(500).json({ status: 500, msg: error.message });
+    res.status(500).json({ status: 500, message: error.message });
   }
 };
