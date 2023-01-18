@@ -12,12 +12,10 @@ export const Register = async (req, res) => {
   const { nama, email, nik, unit, jabatan, password, confPassword } = req.body;
 
   if (password !== confPassword) {
-    return res
-      .status(200)
-      .json({
-        status: 400,
-        message: "Password dan Confirm Password Tidak Sama",
-      });
+    return res.status(200).json({
+      status: 400,
+      message: "Password dan Confirm Password Tidak Sama",
+    });
   }
 
   const salt = await bcrypt.genSalt();
@@ -67,7 +65,7 @@ export const Register = async (req, res) => {
           to: email,
           subject: "Verifikasi Email",
           text: `Klik link di bawah ini untuk verifikasi email :
-          ${process.env.BASE_URL}/${nik}/veryfyemail/${hashPassword}`,
+          ${process.env.BASE_URL}/${nik}/verifyemail/${hashPassword}`,
         };
 
         transporter.sendMail(mail_config, async function (err, info) {
@@ -112,7 +110,7 @@ export const Register = async (req, res) => {
   });
 };
 
-export const sendVeryfyEmail = async (req, res) => {
+export const sendVerifyEmail = async (req, res) => {
   const { email } = req.body;
   try {
     const user = await Users.findAll({
@@ -125,7 +123,7 @@ export const sendVeryfyEmail = async (req, res) => {
 
     if (user.length > 0) {
       if (isActive == true) {
-        return res.status(400).json({ status: 400, message: "Email verified" });
+        return res.status(200).json({ status: 400, message: "Email verified" });
       }
       const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -153,7 +151,31 @@ export const sendVeryfyEmail = async (req, res) => {
       res.status(200).json({ status: 200, message: "Email sent successfully" });
     }
   } catch (error) {
-    return res.status(404).json({
+    return res.status(200).json({
+      status: 404,
+      message: "Email not found",
+    });
+  }
+};
+
+export const checkVerifyEmail = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await Users.findAll({
+      where: { email: email },
+    });
+
+    const isActive = user[0].is_active;
+
+    if (user.length > 0) {
+      if (isActive == true) {
+        return res.status(200).json({ status: 400, message: "Email verified" });
+      }
+
+      res.status(200).json({ status: 200, message: "Email not verified" });
+    }
+  } catch (error) {
+    return res.status(200).json({
       status: 404,
       message: "Email not found",
     });
