@@ -47,6 +47,7 @@ export const Register = async (req, res) => {
     });
   }
 
+
   emailExistence.check(email, function (error, response) {
     try {
       if (response === true) {
@@ -65,7 +66,7 @@ export const Register = async (req, res) => {
           to: email,
           subject: "Verifikasi Email",
           text: `Klik link di bawah ini untuk verifikasi email :
-          ${process.env.BASE_URL}/${nik}/verifyemail/${hashPassword}`,
+          ${process.env.BASE_URL}/${nik}/verifyemail/${unit}`,
         };
 
         transporter.sendMail(mail_config, async function (err, info) {
@@ -118,8 +119,8 @@ export const sendVerifyEmail = async (req, res) => {
     });
 
     const nik = user[0].nik;
-    const hashPassword = user[0].password;
     const isActive = user[0].is_active;
+    const unit = user[0].unit;
 
     if (user.length > 0) {
       if (isActive == true) {
@@ -139,7 +140,7 @@ export const sendVerifyEmail = async (req, res) => {
         from: process.env.EMAIL_USER,
         to: email,
         subject: "Verifikasi Email",
-        text: `Klik link di bawah ini untuk verifikasi email : ${process.env.BASE_URL}/${nik}/verifyemail/${hashPassword}`,
+        text: `Klik link di bawah ini untuk verifikasi email : ${process.env.BASE_URL}/${nik}/verifyemail/${unit}`,
       };
 
       transporter.sendMail(mail_config, function (err, info) {
@@ -169,7 +170,7 @@ export const checkVerifyEmail = async (req, res) => {
 
     if (user.length > 0) {
       if (isActive == true) {
-        return res.status(200).json({ status: 400, message: "Email verified" });
+        return res.status(200).json({ status: 200, message: "Email verified" });
       }
 
       res.status(200).json({ status: 200, message: "Email not verified" });
@@ -184,11 +185,12 @@ export const checkVerifyEmail = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
   const nik = req.params.nik;
-  const token = req.params.token;
+  const unit = req.params.unit;
+
   try {
     const user = await Users.findAll({
       where: {
-        [Op.and]: [{ nik: nik }, { password: token }],
+        [Op.and]: [{ nik: nik }, { unit: unit }],
       },
     });
 
@@ -197,7 +199,7 @@ export const verifyEmail = async (req, res) => {
         { is_active: true },
         {
           where: {
-            [Op.and]: [{ nik: nik }, { password: token }],
+            [Op.and]: [{ nik: nik }, { unit: unit }],
           },
         }
       );
@@ -213,7 +215,7 @@ export const verifyEmail = async (req, res) => {
       });
     }
   } catch (error) {
-    return res.status(500).json({ status: 500, message: error.message });
+    return res.status(200).json({ status: 500, message: error.message });
   }
 };
 

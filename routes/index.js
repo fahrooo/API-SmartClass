@@ -26,7 +26,7 @@ router.post("/register", Register);
 router.post("/login", Login);
 router.get("/token", refreshToken);
 router.delete("/logout", Logout);
-router.get("/:nik/verifyemail/:token", verifyEmail);
+router.get("/:nik/verifyemail/:unit", verifyEmail);
 router.post("/sendverifyemail", sendVerifyEmail);
 router.post("/checkverifyemail", checkVerifyEmail);
 
