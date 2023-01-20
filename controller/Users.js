@@ -96,7 +96,7 @@ export const Register = async (req, res) => {
               <h1 style="color: #ffffff">Innovation Connect</h1>
             </div>
           </div>
-          <div style="padding: 30px">
+          <div style="padding: 30px;">
             <p style="margin-bottom: 0px; font-size: 20px">Selamat datang,</p>
             <p style="margin: 0px; margin-top: 10px; font-size: 20px">
               Berikut kode <strong>OTP</strong> untuk melakukan aktivasi akun
@@ -104,7 +104,7 @@ export const Register = async (req, res) => {
           </div>
           <div style="padding-left: 140px; padding-right: 140px">
             <div style="background-color: #d9d9d9">
-              <h1 style="font-size: 50px">${codeOtp}</h1>
+              <h1 style="font-size: 40px">${codeOtp}</h1>
             </div>
           </div>
         </div>
@@ -138,6 +138,7 @@ export const Register = async (req, res) => {
               email: email,
               password: hashPassword,
               is_active: false,
+              code_otp: codeOtp,
             });
 
             return res.status(200).json({
@@ -180,7 +181,7 @@ export const sendVerifyEmail = async (req, res) => {
 
     if (user.length > 0) {
       if (isActive == true) {
-        return res.status(200).json({ status: 400, message: "Email verified" });
+        return res.status(200).json({ status: 200, message: "Email verified" });
       }
 
       const codeOtp = otpGenerator.generate(4, {
@@ -228,7 +229,7 @@ export const sendVerifyEmail = async (req, res) => {
             <h1 style="color: #ffffff">Innovation Connect</h1>
           </div>
         </div>
-        <div style="padding: 30px">
+        <div style="padding: 30px;">
           <p style="margin-bottom: 0px; font-size: 20px">Selamat datang,</p>
           <p style="margin: 0px; margin-top: 10px; font-size: 20px">
             Berikut kode <strong>OTP</strong> untuk melakukan aktivasi akun
@@ -236,7 +237,7 @@ export const sendVerifyEmail = async (req, res) => {
         </div>
         <div style="padding-left: 140px; padding-right: 140px">
           <div style="background-color: #d9d9d9">
-            <h1 style="font-size: 50px">${codeOtp}</h1>
+            <h1 style="font-size: 40px">${codeOtp}</h1>
           </div>
         </div>
       </div>
@@ -300,7 +301,7 @@ export const checkVerifyEmail = async (req, res) => {
 };
 
 export const verifyEmail = async (req, res) => {
-  const { email, codeOtp } = req.body;
+  const { email, code_otp } = req.body;
 
   try {
     const user = await Users.findAll({
@@ -314,7 +315,7 @@ export const verifyEmail = async (req, res) => {
         { is_active: true },
         {
           where: {
-            [Op.and]: [{ email: email }, { code_otp: codeOtp }],
+            [Op.and]: [{ email: email }, { code_otp: code_otp }],
           },
         }
       );
