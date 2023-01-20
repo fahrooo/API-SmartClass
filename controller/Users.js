@@ -5,6 +5,7 @@ import { Op, where } from "sequelize";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import emailExistence from "email-existence";
+import otpGenerator from "otp-generator";
 
 dotenv.config();
 
@@ -50,7 +51,12 @@ export const Register = async (req, res) => {
   emailExistence.check(email, function (error, response) {
     try {
       if (response === true) {
-        const codeOtp = 4721;
+        const codeOtp = otpGenerator.generate(4, {
+          upperCaseAlphabets: false,
+          specialChars: false,
+          lowerCaseAlphabets: false,
+        });
+
         const source = `<div
         style="
           display: flex;
@@ -178,6 +184,66 @@ export const sendVerifyEmail = async (req, res) => {
       if (isActive == true) {
         return res.status(200).json({ status: 400, message: "Email verified" });
       }
+
+      const codeOtp = otpGenerator.generate(4, {
+        upperCaseAlphabets: false,
+        specialChars: false,
+        lowerCaseAlphabets: false,
+      });
+
+      const source = `<div
+      style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh;
+        margin-left: auto;
+        margin-right: auto;
+      "
+    >
+      <div
+        style="
+          background-color: #eef1f2;
+          width: 639px;
+          height: 350px;
+          text-align: center;
+          font-family: Arial, Helvetica, sans-serif;
+          border-radius: 40px;
+        "
+      >
+        <div
+          style="
+            background-color: #355d77;
+            padding-left: 20px;
+            padding-right: 20px;
+            height: 70px;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+            margin-left: auto;
+            margin-right: auto;
+          "
+        >
+          <div style="margin-left: auto; margin-right: auto">
+            <h1 style="color: #ffffff">Innovation Connect</h1>
+          </div>
+        </div>
+        <div style="padding: 30px">
+          <p style="margin-bottom: 0px; font-size: 20px">Selamat datang,</p>
+          <p style="margin: 0px; margin-top: 10px; font-size: 20px">
+            Berikut kode <strong>OTP</strong> untuk melakukan aktivasi akun
+          </p>
+        </div>
+        <div style="padding-left: 140px; padding-right: 140px">
+          <div style="background-color: #d9d9d9">
+            <h1 style="font-size: 50px">${codeOtp}</h1>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
       const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 465,
@@ -192,7 +258,7 @@ export const sendVerifyEmail = async (req, res) => {
         from: process.env.EMAIL_USER,
         to: email,
         subject: "Verifikasi Email",
-        text: `Klik link di bawah ini untuk verifikasi email : ${process.env.BASE_URL}/${nik}/verifyemail/${unit}`,
+        html: source,
       };
 
       transporter.sendMail(mail_config, function (err, info) {
@@ -236,13 +302,12 @@ export const checkVerifyEmail = async (req, res) => {
 };
 
 export const verifyEmail = async (req, res) => {
-  const nik = req.params.nik;
-  const unit = req.params.unit;
+  const { email, codeOtp } = req.body;
 
   try {
     const user = await Users.findAll({
       where: {
-        [Op.and]: [{ nik: nik }, { unit: unit }],
+        [Op.and]: [{ email: email }, { code_otp: codeOtp }],
       },
     });
 
@@ -251,23 +316,23 @@ export const verifyEmail = async (req, res) => {
         { is_active: true },
         {
           where: {
-            [Op.and]: [{ nik: nik }, { unit: unit }],
+            [Op.and]: [{ email: email }, { code_otp: codeOtp }],
           },
         }
       );
 
       res.status(201).json({
         status: 201,
-        message: "Register Berhasil",
+        message: "Aktivasi Berhasil",
       });
     } else {
       return res.status(200).json({
         status: 400,
-        message: "Register Gagal",
+        message: "Aktivasi Gagal",
       });
     }
   } catch (error) {
-    return res.status(200).json({ status: 500, message: error.message });
+    return res.status(500).json({ status: 500, message: error.message });
   }
 };
 

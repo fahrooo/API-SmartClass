@@ -34,6 +34,9 @@ const Users = db.define(
     refresh_token: {
       type: DataTypes.TEXT,
     },
+    code_otp: {
+      type: DataTypes.INTEGER,
+    },
   },
   {
     freezeTableName: true,
@@ -43,5 +46,5 @@ const Users = db.define(
 export default Users;
 
 (async () => {
-    await db.sync();
-  })();
+  await db.sync();
+})();
