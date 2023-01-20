@@ -176,9 +176,7 @@ export const sendVerifyEmail = async (req, res) => {
       where: { email: email },
     });
 
-    const nik = user[0].nik;
     const isActive = user[0].is_active;
-    const unit = user[0].unit;
 
     if (user.length > 0) {
       if (isActive == true) {
