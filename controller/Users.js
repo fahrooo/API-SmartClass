@@ -307,7 +307,7 @@ export const verifyEmail = async (req, res) => {
   try {
     const user = await Users.findAll({
       where: {
-        [Op.and]: [{ email: email }, { code_otp: codeOtp }],
+        email: email,
       },
     });
 
@@ -321,8 +321,8 @@ export const verifyEmail = async (req, res) => {
         }
       );
 
-      res.status(201).json({
-        status: 201,
+      res.status(200).json({
+        status: 200,
         message: "Aktivasi Berhasil",
       });
     } else {
