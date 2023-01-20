@@ -327,7 +327,7 @@ export const verifyEmail = async (req, res) => {
     } else {
       return res.status(200).json({
         status: 400,
-        message: "Aktivasi Gagal",
+        message: "Kode OTP salah",
       });
     }
   } catch (error) {
