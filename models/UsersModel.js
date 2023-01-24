@@ -12,7 +12,7 @@ const Users = db.define(
     nik: {
       type: DataTypes.BIGINT,
     },
-    unit: {
+    id_unit: {
       type: DataTypes.INTEGER,
     },
     jabatan: {

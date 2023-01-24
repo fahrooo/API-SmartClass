@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import { Op, where } from "sequelize";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import emailExistence from "email-existence";
 import otpGenerator from "otp-generator";
 
 dotenv.config();
@@ -48,16 +47,14 @@ export const Register = async (req, res) => {
     });
   }
 
-  emailExistence.check(email, function (error, response) {
-    try {
-      if (response === true) {
-        const codeOtp = otpGenerator.generate(4, {
-          upperCaseAlphabets: false,
-          specialChars: false,
-          lowerCaseAlphabets: false,
-        });
+  try {
+    const codeOtp = otpGenerator.generate(4, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+      lowerCaseAlphabets: false,
+    });
 
-        const source = `<div
+    const source = `<div
         style="
           display: flex;
           justify-content: center;
@@ -110,64 +107,57 @@ export const Register = async (req, res) => {
         </div>
       </div>`;
 
-        const transporter = nodemailer.createTransport({
-          host: "smtp.gmail.com",
-          port: 465,
-          secure: true,
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASSWORD,
-          },
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mail_config = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Verifikasi Email",
+      html: source,
+    };
+
+    transporter.sendMail(mail_config, async function (err, info) {
+      if (!err) {
+        const users = await Users.create({
+          nama: nama,
+          nik: nik,
+          id_unit: unit,
+          jabatan: jabatan,
+          role: "Peserta",
+          email: email,
+          password: hashPassword,
+          is_active: false,
+          code_otp: codeOtp,
         });
 
-        const mail_config = {
-          from: process.env.EMAIL_USER,
-          to: email,
-          subject: "Verifikasi Email",
-          html: source,
-        };
-
-        transporter.sendMail(mail_config, async function (err, info) {
-          if (!err) {
-            const users = await Users.create({
-              nama: nama,
-              nik: nik,
-              unit: unit,
-              jabatan: jabatan,
-              role: "Peserta",
-              email: email,
-              password: hashPassword,
-              is_active: false,
-              code_otp: codeOtp,
-            });
-
-            return res.status(200).json({
-              status: 200,
-              message: "Silahkan verifikasi email",
-              data: { nama, email },
-            });
-          } else {
-            return res.status(200).json({
-              status: 400,
-              message: "Email not sent",
-              data: err.message,
-            });
-          }
+        return res.status(200).json({
+          status: 200,
+          message: "Silahkan verifikasi email",
+          data: { nama, email },
         });
       } else {
         return res.status(200).json({
           status: 400,
-          message: "Email incorrect",
+          message: "Email not sent",
+          data: err.message,
         });
       }
-    } catch (error) {
-      return res.status(500).json({
-        status: 500,
-        message: "Internal Server Error",
-        error: error.message,
-      });
-    }
-  });
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
 };
 
 export const sendVerifyEmail = async (req, res) => {
@@ -310,24 +300,33 @@ export const verifyEmail = async (req, res) => {
       },
     });
 
-    if (user.length > 0) {
-      await Users.update(
-        { is_active: true },
-        {
-          where: {
-            [Op.and]: [{ email: email }, { code_otp: code_otp }],
-          },
-        }
-      );
+    const codeOTP = user[0].code_otp;
 
-      res.status(200).json({
-        status: 200,
-        message: "Aktivasi Berhasil",
-      });
+    if (user.length > 0) {
+      if (codeOTP != code_otp) {
+        return res.status(200).json({
+          status: 400,
+          message: "Kode OTP salah",
+        });
+      } else {
+        await Users.update(
+          { is_active: true },
+          {
+            where: {
+              [Op.and]: [{ email: email }, { code_otp: code_otp }],
+            },
+          }
+        );
+
+        return res.status(200).json({
+          status: 200,
+          message: "Aktivasi Berhasil",
+        });
+      }
     } else {
       return res.status(200).json({
         status: 400,
-        message: "Kode OTP salah",
+        message: "Email not found",
       });
     }
   } catch (error) {
