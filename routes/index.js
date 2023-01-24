@@ -9,6 +9,7 @@ import {
   verifyEmail,
   sendVerifyEmail,
   checkVerifyEmail,
+  updateEmail,
 } from "../controller/Users.js";
 
 import { getUnits } from "../controller/Unit.js";
@@ -29,6 +30,7 @@ router.delete("/logout", Logout);
 router.post("/verifyemail", verifyEmail);
 router.post("/sendverifyemail", sendVerifyEmail);
 router.post("/checkverifyemail", checkVerifyEmail);
+router.post("/updateemailverify", updateEmail);
 
 //CRUD Users
 router.post("/users", verifyToken, getUsers);

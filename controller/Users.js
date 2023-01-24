@@ -160,6 +160,110 @@ export const Register = async (req, res) => {
   }
 };
 
+export const updateEmail = async (req, res) => {
+  const { new_email, old_email } = req.body;
+
+  try {
+    const codeOtp = otpGenerator.generate(4, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+      lowerCaseAlphabets: false,
+    });
+
+    const source = `<div
+      style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh;
+        margin-left: auto;
+        margin-right: auto;
+      "
+    >
+      <div
+        style="
+          background-color: #eef1f2;
+          width: 639px;
+          height: 350px;
+          text-align: center;
+          font-family: Arial, Helvetica, sans-serif;
+          border-radius: 40px;
+        "
+      >
+        <div
+          style="
+            background-color: #355d77;
+            padding-left: 20px;
+            padding-right: 20px;
+            height: 70px;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+            margin-left: auto;
+            margin-right: auto;
+          "
+        >
+          <div style="margin-left: auto; margin-right: auto">
+            <h1 style="color: #ffffff">Innovation Connect</h1>
+          </div>
+        </div>
+        <div style="padding: 30px;">
+          <p style="margin-bottom: 0px; font-size: 20px">Selamat datang,</p>
+          <p style="margin: 0px; margin-top: 10px; font-size: 20px">
+            Berikut kode <strong>OTP</strong> untuk melakukan aktivasi akun
+          </p>
+        </div>
+        <div style="padding-left: 140px; padding-right: 140px">
+          <div style="background-color: #d9d9d9">
+            <h1 style="font-size: 40px">${codeOtp}</h1>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mail_config = {
+      from: process.env.EMAIL_USER,
+      to: new_email,
+      subject: "Verifikasi Email",
+      html: source,
+    };
+
+    transporter.sendMail(mail_config, function (err, info) {
+      if (err) {
+        console.log(err);
+      }
+    });
+
+    await Users.update(
+      { email: new_email, code_otp: codeOtp },
+      {
+        where: { email: old_email },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ status: 200, message: "Email updated successfuly" });
+  } catch (error) {
+    return res.status(200).json({
+      status: 404,
+      message: "Email not found",
+    });
+  }
+};
+
 export const sendVerifyEmail = async (req, res) => {
   const { email } = req.body;
   try {
@@ -256,7 +360,16 @@ export const sendVerifyEmail = async (req, res) => {
         }
       });
 
-      res.status(200).json({ status: 200, message: "Email sent successfully" });
+      await Users.update(
+        { code_otp: codeOtp },
+        {
+          where: { email: email },
+        }
+      );
+
+      return res
+        .status(200)
+        .json({ status: 200, message: "Email sent successfully" });
     }
   } catch (error) {
     return res.status(200).json({
