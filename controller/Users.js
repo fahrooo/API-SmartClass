@@ -9,7 +9,7 @@ import otpGenerator from "otp-generator";
 dotenv.config();
 
 export const Register = async (req, res) => {
-  const { nama, email, nik, unit, jabatan, password, confPassword } = req.body;
+  const { nama, email, nik, id_unit, jabatan, password, confPassword } = req.body;
 
   if (password !== confPassword) {
     return res.status(200).json({
@@ -129,7 +129,7 @@ export const Register = async (req, res) => {
         const users = await Users.create({
           nama: nama,
           nik: nik,
-          id_unit: unit,
+          id_unit: id_unit,
           jabatan: jabatan,
           role: "Peserta",
           email: email,
@@ -155,7 +155,7 @@ export const Register = async (req, res) => {
     return res.status(500).json({
       status: 500,
       message: "Internal Server Error",
-      error: error.message,
+      error: error,
     });
   }
 };
@@ -457,14 +457,14 @@ export const Login = async (req, res) => {
 
     if (user[0].is_active == false) {
       return res
-        .status(400)
+        .status(200)
         .json({ status: 400, message: "Email is not verified" });
     }
 
     const match = await bcrypt.compare(req.body.password, user[0].password);
 
     if (!match) {
-      return res.status(400).json({ status: 400, message: "Wrong Password" });
+      return res.status(200).json({ status: 400, message: "Wrong Password" });
     }
 
     const userId = user[0].id;
@@ -508,7 +508,7 @@ export const Login = async (req, res) => {
       accessToken,
     });
   } catch (error) {
-    res.status(404).json({
+    res.status(200).json({
       status: 404,
       message: "Email not found",
     });
