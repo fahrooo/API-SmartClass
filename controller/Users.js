@@ -9,7 +9,8 @@ import otpGenerator from "otp-generator";
 dotenv.config();
 
 export const Register = async (req, res) => {
-  const { nama, email, nik, id_unit, jabatan, password, confPassword } = req.body;
+  const { nama, email, nik, id_unit, jabatan, password, confPassword } =
+    req.body;
 
   if (password !== confPassword) {
     return res.status(200).json({
@@ -99,9 +100,9 @@ export const Register = async (req, res) => {
               Berikut kode <strong>OTP</strong> untuk melakukan aktivasi akun
             </p>
           </div>
-          <div style="padding-left: 140px; padding-right: 140px">
+          <div style="padding-left: 100px; padding-right: 100px">
             <div style="background-color: #d9d9d9">
-              <h1 style="font-size: 40px">${codeOtp}</h1>
+              <h1 style="font-size: 30px">${codeOtp}</h1>
             </div>
           </div>
         </div>
@@ -215,9 +216,9 @@ export const updateEmail = async (req, res) => {
             Berikut kode <strong>OTP</strong> untuk melakukan aktivasi akun
           </p>
         </div>
-        <div style="padding-left: 140px; padding-right: 140px">
+        <div style="padding-left: 100px; padding-right: 100px">
           <div style="background-color: #d9d9d9">
-            <h1 style="font-size: 40px">${codeOtp}</h1>
+            <h1 style="font-size: 30px">${codeOtp}</h1>
           </div>
         </div>
       </div>
@@ -329,9 +330,9 @@ export const sendVerifyEmail = async (req, res) => {
             Berikut kode <strong>OTP</strong> untuk melakukan aktivasi akun
           </p>
         </div>
-        <div style="padding-left: 140px; padding-right: 140px">
+        <div style="padding-left: 100px; padding-right: 100px">
           <div style="background-color: #d9d9d9">
-            <h1 style="font-size: 40px">${codeOtp}</h1>
+            <h1 style="font-size: 30px">${codeOtp}</h1>
           </div>
         </div>
       </div>

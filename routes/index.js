@@ -12,7 +12,7 @@ import {
   updateEmail,
 } from "../controller/Users.js";
 
-import { getUnits } from "../controller/Unit.js";
+import { getUnits, postUnits } from "../controller/Unit.js";
 
 import { getKelas } from "../controller/Kelas.js";
 
@@ -38,7 +38,8 @@ router.post("/users/update", verifyToken, putUsers);
 router.delete("/users/delete/:id", verifyToken, deleteUsers);
 
 //CRUD Units
-router.post("/units", verifyToken, getUnits);
+router.get("/units", getUnits);
+router.post("/units/create", postUnits);
 
 //CRUD Kelas
 router.post("/kelas", verifyToken, getUnits);
