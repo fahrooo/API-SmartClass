@@ -471,6 +471,7 @@ export const Login = async (req, res) => {
     const userId = user[0].id;
     const nama = user[0].nama;
     const email = user[0].email;
+    const unit = user[0].id_unit;
     const role = user[0].role;
 
     const accessToken = jwt.sign(
@@ -505,7 +506,7 @@ export const Login = async (req, res) => {
     res.status(200).json({
       status: 200,
       message: "Berhasil Login",
-      data: { id: userId, nama, email, role },
+      data: { id: userId, nama, email, unit, role },
       accessToken,
     });
   } catch (error) {
