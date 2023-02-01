@@ -132,7 +132,7 @@ export const Register = async (req, res) => {
           nik: nik,
           id_unit: id_unit,
           jabatan: jabatan,
-          role: "Peserta",
+          role: "peserta",
           email: email,
           password: hashPassword,
           is_active: false,
