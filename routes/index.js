@@ -10,6 +10,7 @@ import {
   sendVerifyEmail,
   checkVerifyEmail,
   updateEmail,
+  updatePassword,
 } from "../controller/Users.js";
 
 import { getUnits, postUnits } from "../controller/Unit.js";
@@ -31,6 +32,7 @@ router.post("/verifyemail", verifyEmail);
 router.post("/sendverifyemail", sendVerifyEmail);
 router.post("/checkverifyemail", checkVerifyEmail);
 router.post("/updateemailverify", updateEmail);
+router.post("/updatepassword", updatePassword);
 
 //CRUD Users
 router.post("/users", verifyToken, getUsers);

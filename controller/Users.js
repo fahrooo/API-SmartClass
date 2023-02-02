@@ -281,7 +281,7 @@ export const sendVerifyEmail = async (req, res) => {
           specialChars: false,
           lowerCaseAlphabets: false,
         });
-  
+
         const source = `<div
         style="
           display: flex;
@@ -334,7 +334,7 @@ export const sendVerifyEmail = async (req, res) => {
           </div>
         </div>
       </div>`;
-  
+
         const transporter = nodemailer.createTransport({
           host: "smtp.gmail.com",
           port: 465,
@@ -344,20 +344,20 @@ export const sendVerifyEmail = async (req, res) => {
             pass: process.env.EMAIL_PASSWORD,
           },
         });
-  
+
         const mail_config = {
           from: process.env.EMAIL_USER,
           to: email,
           subject: "Verifikasi Email",
           html: source,
         };
-  
+
         transporter.sendMail(mail_config, function (err, info) {
           if (err) {
             console.log(err);
           }
         });
-  
+
         await Users.update(
           { code_otp: codeOtp },
           {
@@ -533,6 +533,32 @@ export const verifyEmail = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({ status: 500, message: error.message });
+  }
+};
+
+export const updatePassword = async (req, res) => {
+  const { email, password } = req.body;
+
+  const salt = await bcrypt.genSalt();
+  const hashPassword = await bcrypt.hash(password, salt);
+
+  try {
+    await Users.update(
+      { password: hashPassword },
+      {
+        where: { email: email },
+      }
+    );
+
+    return res.status(200).json({
+      status: 200,
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    return res.status(200).json({
+      status: 400,
+      message: "Password update failed",
+    });
   }
 };
 
