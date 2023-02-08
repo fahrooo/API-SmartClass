@@ -12,14 +12,17 @@ import {
   updateEmail,
   updatePassword,
 } from "../controller/Users.js";
-
+import { relayGet, relayPost } from "../controller/Perangkat.js";
 import { getUnits, postUnits } from "../controller/Unit.js";
-
 import { getKelas } from "../controller/Kelas.js";
+import {} from "../controller/operatorKelas.js";
+import {} from "../controller/datastream.js";
+import {} from "../controller/perangkatKelas.js";
+import {} from "../controller/waktu.js";
+import {} from "../controller/booking";
 
 import { verifyToken } from "../middleware/VerifyToken.js";
 import { refreshToken } from "../controller/RefreshToken.js";
-import { relayGet, relayPost } from "../controller/Perangkat.js";
 
 const router = express.Router();
 

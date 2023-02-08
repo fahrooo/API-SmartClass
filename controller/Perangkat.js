@@ -1,4 +1,5 @@
 import * as mqtt from "mqtt";
+import Perangkat from "../models/PerangkatModel";
 
 export const relayPost = async (req, res) => {
   const topic = req.body.topic;

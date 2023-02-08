@@ -1,19 +1,12 @@
 import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
 
-
 const { DataTypes } = Sequelize;
 
-const Kelas = db.define(
-  "kelas",
+const Perangkat = db.define(
+  "perangkat",
   {
-    id_unit: {
-      type: DataTypes.INTEGER,
-    },
     nama: {
-      type: DataTypes.STRING,
-    },
-    topic: {
       type: DataTypes.STRING,
     },
   },
@@ -22,8 +15,8 @@ const Kelas = db.define(
   }
 );
 
-export default Kelas;
+export default Perangkat;
 
 (async () => {
-    await db.sync();
-  })();
+  await db.sync();
+})();

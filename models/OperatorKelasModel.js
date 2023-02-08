@@ -1,20 +1,16 @@
 import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
 
-
 const { DataTypes } = Sequelize;
 
-const Kelas = db.define(
-  "kelas",
+const OperatorKelas = db.define(
+  "operator_kelas",
   {
-    id_unit: {
+    id_user: {
       type: DataTypes.INTEGER,
     },
-    nama: {
-      type: DataTypes.STRING,
-    },
-    topic: {
-      type: DataTypes.STRING,
+    id_kelas: {
+      type: DataTypes.INTEGER,
     },
   },
   {
@@ -22,8 +18,8 @@ const Kelas = db.define(
   }
 );
 
-export default Kelas;
+export default OperatorKelas;
 
 (async () => {
-    await db.sync();
-  })();
+  await db.sync();
+})();

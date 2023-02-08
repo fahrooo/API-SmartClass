@@ -1,20 +1,28 @@
 import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
 
-
 const { DataTypes } = Sequelize;
 
-const Kelas = db.define(
-  "kelas",
+const Datastream = db.define(
+  "datastream",
   {
-    id_unit: {
+    id_perangkat: {
       type: DataTypes.INTEGER,
     },
     nama: {
       type: DataTypes.STRING,
     },
-    topic: {
+    turn_on: {
       type: DataTypes.STRING,
+    },
+    turn_off: {
+      type: DataTypes.STRING,
+    },
+    max_value: {
+      type: DataTypes.INTEGER,
+    },
+    min_value: {
+      type: DataTypes.INTEGER,
     },
   },
   {
@@ -22,8 +30,8 @@ const Kelas = db.define(
   }
 );
 
-export default Kelas;
+export default Datastream;
 
 (async () => {
-    await db.sync();
-  })();
+  await db.sync();
+})();
