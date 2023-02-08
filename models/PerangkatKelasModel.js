@@ -13,10 +13,7 @@ const PerangkatKelas = db.define(
       type: DataTypes.INTEGER,
     },
     nama: {
-      type: DataTypes.INTEGER,
-    },
-    nama: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
   },
   {
