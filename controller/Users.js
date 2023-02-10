@@ -1,10 +1,11 @@
 import Users from "../models/usersModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Op, where } from "sequelize";
+import { Op } from "sequelize";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import otpGenerator from "otp-generator";
+import Units from "../models/UnitsModel";
 
 dotenv.config();
 
@@ -665,51 +666,45 @@ export const Logout = async (req, res) => {
 };
 
 export const getUsers = async (req, res) => {
-  const search = req.body.search;
+  const {
+    filter_nama,
+    filter_unit,
+    // filter_role,
+    nama,
+    id_unit,
+    // role,
+  } = req.body;
   const page = parseInt(req.body.page) - 1;
   const limit = parseInt(req.body.limit);
   const offset = limit * page;
-  const totalRows = await Users.count({
-    where: {
-      [Op.or]: [
-        {
-          nama: {
-            [Op.like]: "%" + search + "%",
-          },
-        },
-        {
-          email: {
-            [Op.like]: "%" + search + "%",
-          },
-        },
-      ],
-    },
-  });
 
-  const totalPage = Math.ceil(totalRows / limit);
-
-  try {
-    const users = await Users.findAll({
+  if (filter_nama == true) {
+    const totalRows = await Users.count({
       where: {
-        [Op.or]: [
-          {
-            nama: {
-              [Op.like]: "%" + search + "%",
-            },
-          },
-          {
-            email: {
-              [Op.like]: "%" + search + "%",
-            },
-          },
-        ],
+        nama: {
+          [Op.like]: "%" + nama + "%",
+        },
       },
-      offset: offset,
-      limit: limit,
-      attributes: ["id", "nama", "email"],
     });
 
-    res.status(users.length ? 200 : 404).json({
+    const totalPage = Math.ceil(totalRows / limit);
+
+    Units.hasMany(Users, { primaryKey: "id" });
+    Users.belongsTo(Units, { foreignKey: "id_unit" });
+
+    const users = await Users.findAll({
+      where: {
+        nama: {
+          [Op.like]: "%" + nama + "%",
+        },
+      },
+      include: [Units],
+      offset: offset,
+      limit: limit,
+      attributes: ["id", "nik", "nama", "email", "jabatan", "is_active"],
+    });
+
+    res.status(200).json({
       status: users.length ? 200 : 404,
       message: users.length ? "Data Found" : "Data Not Found",
       data: users.length ? users : null,
@@ -720,11 +715,64 @@ export const getUsers = async (req, res) => {
       totalRows: users.length ? totalRows : null,
       totalPage: users.length ? totalPage : null,
     });
-  } catch (error) {
-    return res.status(500).json({
-      status: 500,
-      message: "Internal Server Error",
-      data: null,
+  } else if (filter_unit == true) {
+    const totalRows = await Users.count({
+      where: {
+        id_unit: id_unit,
+      },
+    });
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    Units.hasMany(Users, { primaryKey: "id" });
+    Users.belongsTo(Units, { foreignKey: "id_unit" });
+
+    const users = await Users.findAll({
+      where: {
+        id_unit: id_unit,
+      },
+      include: [Units],
+      offset: offset,
+      limit: limit,
+      attributes: ["id", "nik", "nama", "email", "jabatan", "is_active"],
+    });
+
+    res.status(200).json({
+      status: users.length ? 200 : 404,
+      message: users.length ? "Data Found" : "Data Not Found",
+      data: users.length ? users : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + users.length - 1,
+      totalRows: users.length ? totalRows : null,
+      totalPage: users.length ? totalPage : null,
+    });
+  } else {
+    const totalRows = await Users.count();
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    Units.hasMany(Users, { primaryKey: "id" });
+    Users.belongsTo(Units, { foreignKey: "id_unit" });
+
+    const users = await Users.findAll({
+      include: [Units],
+      offset: offset,
+      limit: limit,
+      attributes: ["id", "nik", "nama", "email", "jabatan", "is_active"],
+    });
+
+    res.status(200).json({
+      status: users.length ? 200 : 404,
+      message: users.length ? "Data Found" : "Data Not Found",
+      data: users.length ? users : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + users.length - 1,
+      totalRows: users.length ? totalRows : null,
+      totalPage: users.length ? totalPage : null,
     });
   }
 };

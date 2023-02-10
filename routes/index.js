@@ -13,7 +13,12 @@ import {
   updatePassword,
 } from "../controller/Users.js";
 import { relayGet, relayPost } from "../controller/Perangkat.js";
-import { getUnits, postUnits } from "../controller/Units.js";
+import {
+  deleteUnits,
+  getUnits,
+  postUnits,
+  putUnits,
+} from "../controller/Units.js";
 import { getKelas } from "../controller/Kelas.js";
 import {} from "../controller/operatorKelas.js";
 import {} from "../controller/datastream.js";
@@ -38,13 +43,15 @@ router.post("/updateemailverify", updateEmail);
 router.post("/updatepassword", updatePassword);
 
 //CRUD Users
-router.post("/users", verifyToken, getUsers);
+router.post("/users", getUsers);
 router.post("/users/update", verifyToken, putUsers);
 router.delete("/users/delete/:id", verifyToken, deleteUsers);
 
 //CRUD Units
 router.get("/units", getUnits);
 router.post("/units/create", postUnits);
+router.put("/units/update/:id", putUnits);
+router.delete("/units/delete/:id", deleteUnits);
 
 //CRUD Kelas
 router.post("/kelas", verifyToken, getUnits);
