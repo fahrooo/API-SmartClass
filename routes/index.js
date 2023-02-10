@@ -13,7 +13,7 @@ import {
   updatePassword,
 } from "../controller/Users.js";
 import { relayGet, relayPost } from "../controller/Perangkat.js";
-import { getUnits, postUnits } from "../controller/Unit.js";
+import { getUnits, postUnits } from "../controller/Units.js";
 import { getKelas } from "../controller/Kelas.js";
 import {} from "../controller/operatorKelas.js";
 import {} from "../controller/datastream.js";

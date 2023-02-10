@@ -1,9 +1,9 @@
-import Unit from "../models/UnitModel";
+import Units from "../models/UnitsModel";
 import { Op, where } from "sequelize";
 
 export const getUnits = async (req, res) => {
   try {
-    const unit = await Unit.findAll();
+    const unit = await Units.findAll();
 
     return res.status(200).json({
       status: 200,
@@ -22,7 +22,7 @@ export const postUnits = async (req, res) => {
   const nama = req.body.nama;
 
   try {
-    const unit = await Unit.create({ nama });
+    const unit = await Units.create({ nama });
 
     return res.status(200).json({
       status: 200,

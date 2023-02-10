@@ -4,7 +4,7 @@ import db from "../config/Database.js";
 
 const { DataTypes } = Sequelize;
 
-const Unit = db.define(
+const Units = db.define(
   "unit",
   {
     nama: {
@@ -16,7 +16,7 @@ const Unit = db.define(
   }
 );
 
-export default Unit;
+export default Units;
 
 (async () => {
     await db.sync();
