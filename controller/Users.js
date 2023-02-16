@@ -1,7 +1,7 @@
 import Users from "../models/usersModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import otpGenerator from "otp-generator";
@@ -666,24 +666,20 @@ export const Logout = async (req, res) => {
 };
 
 export const getUsers = async (req, res) => {
-  const {
-    filter_nama,
-    filter_unit,
-    // filter_role,
-    nama,
-    id_unit,
-    // role,
-  } = req.body;
+  const { filter_nama, filter_unit, filter_role, nama, id_unit, role } =
+    req.body;
   const page = parseInt(req.body.page) - 1;
   const limit = parseInt(req.body.limit);
   const offset = limit * page;
 
-  if (filter_nama == true) {
+  if (filter_nama == true && filter_unit == true && filter_role == true) {
     const totalRows = await Users.count({
       where: {
-        nama: {
-          [Op.like]: "%" + nama + "%",
-        },
+        [Op.and]: [
+          { nama: { [Op.substring]: nama } },
+          { id_unit: id_unit },
+          { role: role },
+        ],
       },
     });
 
@@ -694,14 +690,24 @@ export const getUsers = async (req, res) => {
 
     const users = await Users.findAll({
       where: {
-        nama: {
-          [Op.like]: "%" + nama + "%",
-        },
+        [Op.and]: [
+          { nama: { [Op.substring]: nama } },
+          { id_unit: id_unit },
+          { role: role },
+        ],
       },
       include: [Units],
       offset: offset,
       limit: limit,
-      attributes: ["id", "nik", "nama", "email", "jabatan", "is_active"],
+      attributes: [
+        "id",
+        "nik",
+        "nama",
+        "email",
+        "jabatan",
+        "is_active",
+        "role",
+      ],
     });
 
     res.status(200).json({
@@ -715,10 +721,12 @@ export const getUsers = async (req, res) => {
       totalRows: users.length ? totalRows : null,
       totalPage: users.length ? totalPage : null,
     });
-  } else if (filter_unit == true) {
+  }
+
+  if (filter_nama == true && filter_unit == true && filter_role == false) {
     const totalRows = await Users.count({
       where: {
-        id_unit: id_unit,
+        [Op.and]: [{ nama: { [Op.substring]: nama } }, { id_unit: id_unit }],
       },
     });
 
@@ -729,12 +737,20 @@ export const getUsers = async (req, res) => {
 
     const users = await Users.findAll({
       where: {
-        id_unit: id_unit,
+        [Op.and]: [{ nama: { [Op.substring]: nama } }, { id_unit: id_unit }],
       },
       include: [Units],
       offset: offset,
       limit: limit,
-      attributes: ["id", "nik", "nama", "email", "jabatan", "is_active"],
+      attributes: [
+        "id",
+        "nik",
+        "nama",
+        "email",
+        "jabatan",
+        "is_active",
+        "role",
+      ],
     });
 
     res.status(200).json({
@@ -748,7 +764,224 @@ export const getUsers = async (req, res) => {
       totalRows: users.length ? totalRows : null,
       totalPage: users.length ? totalPage : null,
     });
-  } else {
+  }
+
+  if (filter_nama == true && filter_unit == false && filter_role == true) {
+    const totalRows = await Users.count({
+      where: {
+        [Op.and]: [{ nama: { [Op.substring]: nama } }, { role: role }],
+      },
+    });
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    Units.hasMany(Users, { primaryKey: "id" });
+    Users.belongsTo(Units, { foreignKey: "id_unit" });
+
+    const users = await Users.findAll({
+      where: {
+        [Op.and]: [{ nama: { [Op.substring]: nama } }, { role: role }],
+      },
+      include: [Units],
+      offset: offset,
+      limit: limit,
+      attributes: [
+        "id",
+        "nik",
+        "nama",
+        "email",
+        "jabatan",
+        "is_active",
+        "role",
+      ],
+    });
+
+    res.status(200).json({
+      status: users.length ? 200 : 404,
+      message: users.length ? "Data Found" : "Data Not Found",
+      data: users.length ? users : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + users.length - 1,
+      totalRows: users.length ? totalRows : null,
+      totalPage: users.length ? totalPage : null,
+    });
+  }
+
+  if (filter_nama == false && filter_unit == true && filter_role == true) {
+    const totalRows = await Users.count({
+      where: {
+        [Op.and]: [{ id_unit: id_unit }, { role: role }],
+      },
+    });
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    Units.hasMany(Users, { primaryKey: "id" });
+    Users.belongsTo(Units, { foreignKey: "id_unit" });
+
+    const users = await Users.findAll({
+      where: {
+        [Op.and]: [{ id_unit: id_unit }, { role: role }],
+      },
+      include: [Units],
+      offset: offset,
+      limit: limit,
+      attributes: [
+        "id",
+        "nik",
+        "nama",
+        "email",
+        "jabatan",
+        "is_active",
+        "role",
+      ],
+    });
+
+    res.status(200).json({
+      status: users.length ? 200 : 404,
+      message: users.length ? "Data Found" : "Data Not Found",
+      data: users.length ? users : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + users.length - 1,
+      totalRows: users.length ? totalRows : null,
+      totalPage: users.length ? totalPage : null,
+    });
+  }
+
+  if (filter_nama == true && filter_unit == false && filter_role == false) {
+    const totalRows = await Users.count({
+      where: {
+        [Op.and]: [{ nama: { [Op.substring]: nama } }],
+      },
+    });
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    Units.hasMany(Users, { primaryKey: "id" });
+    Users.belongsTo(Units, { foreignKey: "id_unit" });
+
+    const users = await Users.findAll({
+      where: {
+        [Op.and]: [{ nama: { [Op.substring]: nama } }],
+      },
+      include: [Units],
+      offset: offset,
+      limit: limit,
+      attributes: [
+        "id",
+        "nik",
+        "nama",
+        "email",
+        "jabatan",
+        "is_active",
+        "role",
+      ],
+    });
+
+    res.status(200).json({
+      status: users.length ? 200 : 404,
+      message: users.length ? "Data Found" : "Data Not Found",
+      data: users.length ? users : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + users.length - 1,
+      totalRows: users.length ? totalRows : null,
+      totalPage: users.length ? totalPage : null,
+    });
+  }
+
+  if (filter_nama == false && filter_unit == true && filter_role == false) {
+    const totalRows = await Users.count({
+      where: {
+        [Op.and]: [{ id_unit: id_unit }],
+      },
+    });
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    Units.hasMany(Users, { primaryKey: "id" });
+    Users.belongsTo(Units, { foreignKey: "id_unit" });
+
+    const users = await Users.findAll({
+      where: {
+        [Op.and]: [{ id_unit: id_unit }],
+      },
+      include: [Units],
+      offset: offset,
+      limit: limit,
+      attributes: [
+        "id",
+        "nik",
+        "nama",
+        "email",
+        "jabatan",
+        "is_active",
+        "role",
+      ],
+    });
+
+    res.status(200).json({
+      status: users.length ? 200 : 404,
+      message: users.length ? "Data Found" : "Data Not Found",
+      data: users.length ? users : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + users.length - 1,
+      totalRows: users.length ? totalRows : null,
+      totalPage: users.length ? totalPage : null,
+    });
+  }
+
+  if (filter_nama == false && filter_unit == false && filter_role == true) {
+    const totalRows = await Users.count({
+      where: {
+        [Op.and]: [{ role: role }],
+      },
+    });
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    Units.hasMany(Users, { primaryKey: "id" });
+    Users.belongsTo(Units, { foreignKey: "id_unit" });
+
+    const users = await Users.findAll({
+      where: {
+        [Op.and]: [{ role: role }],
+      },
+      include: [Units],
+      offset: offset,
+      limit: limit,
+      attributes: [
+        "id",
+        "nik",
+        "nama",
+        "email",
+        "jabatan",
+        "is_active",
+        "role",
+      ],
+    });
+
+    res.status(200).json({
+      status: users.length ? 200 : 404,
+      message: users.length ? "Data Found" : "Data Not Found",
+      data: users.length ? users : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + users.length - 1,
+      totalRows: users.length ? totalRows : null,
+      totalPage: users.length ? totalPage : null,
+    });
+  }
+
+  if (filter_nama == false && filter_unit == false && filter_role == false) {
     const totalRows = await Users.count();
 
     const totalPage = Math.ceil(totalRows / limit);
@@ -760,7 +993,15 @@ export const getUsers = async (req, res) => {
       include: [Units],
       offset: offset,
       limit: limit,
-      attributes: ["id", "nik", "nama", "email", "jabatan", "is_active"],
+      attributes: [
+        "id",
+        "nik",
+        "nama",
+        "email",
+        "jabatan",
+        "is_active",
+        "role",
+      ],
     });
 
     res.status(200).json({
@@ -777,40 +1018,131 @@ export const getUsers = async (req, res) => {
   }
 };
 
-export const putUsers = async (req, res) => {
-  const { id, name, email } = req.body;
-  try {
-    const userbyId = await Users.findAll({
-      where: {
-        id: id,
-      },
-      attributes: ["id", "name", "email"],
+export const postUsers = async (req, res) => {
+  const { nama, email, nik, id_unit, jabatan, password, confPassword } =
+    req.body;
+
+  if (password !== confPassword) {
+    return res.status(200).json({
+      status: 400,
+      message: "Password dan Confirm Password Tidak Sama",
     });
-
-    if (userbyId.length > 0) {
-      const user = await Users.update(
-        {
-          name: name,
-          email: email,
-        },
-        {
-          where: {
-            id: id,
-          },
-        }
-      );
-
-      res.status(200).json({
-        status: 200,
-        message: "Data Updated Successfully",
-        data: { ...req.body },
-      });
-    } else {
-      res.status(404).json({ status: 404, message: "Data Not Found" });
-    }
-  } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
   }
+
+  const salt = await bcrypt.genSalt();
+  const hashPassword = await bcrypt.hash(password, salt);
+
+  const checkEmailUser = await Users.findAll({
+    where: {
+      email: email,
+    },
+  });
+
+  const checkNikUser = await Users.findAll({
+    where: {
+      nik: nik,
+    },
+  });
+
+  if (checkNikUser.length > 0) {
+    return res.status(200).json({
+      status: 400,
+      message: "NIK already exist",
+    });
+  }
+
+  if (checkEmailUser.length > 0) {
+    return res.status(200).json({
+      status: 400,
+      message: "Email already exist",
+    });
+  }
+
+  const users = await Users.create({
+    nama: nama,
+    nik: nik,
+    id_unit: id_unit,
+    jabatan: jabatan,
+    role: "peserta",
+    email: email,
+    password: hashPassword,
+    is_active: false,
+  });
+
+  return res.status(200).json({
+    status: 200,
+    message: "Created successfully",
+  });
+};
+
+export const putUsers = async (req, res) => {
+  const { nama, email, nik, id_unit, jabatan, password, confPassword } =
+    req.body;
+  const id = req.params.id;
+
+  const userbyid = await Users.findAll({ where: { id: id } });
+
+  if (userbyid.length == 0) {
+    return res.status(200).json({
+      status: 404,
+      message: "User not found",
+    });
+  }
+
+  if (password !== confPassword) {
+    return res.status(200).json({
+      status: 400,
+      message: "Password dan Confirm Password Tidak Sama",
+    });
+  }
+
+  const salt = await bcrypt.genSalt();
+  const hashPassword = await bcrypt.hash(password, salt);
+
+  const checkEmailUser = await Users.findAll({
+    where: {
+      email: email,
+    },
+  });
+
+  const checkNikUser = await Users.findAll({
+    where: {
+      nik: nik,
+    },
+  });
+
+  if (checkNikUser.length > 0) {
+    return res.status(200).json({
+      status: 400,
+      message: "NIK already exist",
+    });
+  }
+
+  if (checkEmailUser.length > 0) {
+    return res.status(200).json({
+      status: 400,
+      message: "Email already exist",
+    });
+  }
+
+  const users = await Users.update(
+    {
+      nama: nama,
+      nik: nik,
+      id_unit: id_unit,
+      jabatan: jabatan,
+      role: "peserta",
+      email: email,
+      password: hashPassword,
+      is_active: false,
+    },
+    { where: { id: id } }
+  );
+
+  return res.status(200).json({
+    status: 200,
+    message: "Updated successfully",
+  });
 };
 
 export const deleteUsers = async (req, res) => {

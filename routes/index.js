@@ -4,13 +4,14 @@ import {
   Register,
   Login,
   Logout,
-  putUsers,
   deleteUsers,
   verifyEmail,
   sendVerifyEmail,
   checkVerifyEmail,
   updateEmail,
   updatePassword,
+  postUsers,
+  putUsers,
 } from "../controller/Users.js";
 import { relayGet, relayPost } from "../controller/Perangkat.js";
 import {
@@ -44,8 +45,9 @@ router.post("/updatepassword", updatePassword);
 
 //CRUD Users
 router.post("/users", getUsers);
-router.post("/users/update", verifyToken, putUsers);
-router.delete("/users/delete/:id", verifyToken, deleteUsers);
+router.post("/users/create", postUsers);
+router.put("/users/update/:id", putUsers);
+router.delete("/users/delete/:id", deleteUsers);
 
 //CRUD Units
 router.get("/units", getUnits);
@@ -54,7 +56,7 @@ router.put("/units/update/:id", putUnits);
 router.delete("/units/delete/:id", deleteUnits);
 
 //CRUD Kelas
-router.post("/kelas", verifyToken, getUnits);
+router.post("/kelas", getUnits);
 
 //MQTT Perangkat
 router.post("/relaypost", relayPost);
