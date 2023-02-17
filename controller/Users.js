@@ -685,7 +685,7 @@ export const getUsers = async (req, res) => {
 
     const totalPage = Math.ceil(totalRows / limit);
 
-    Units.hasMany(Users, { primaryKey: "id" });
+    Units.hasMany(Users, { foreignKey: "id_unit" });
     Users.belongsTo(Units, { foreignKey: "id_unit" });
 
     const users = await Users.findAll({
@@ -855,7 +855,7 @@ export const getUsers = async (req, res) => {
   if (filter_nama == true && filter_unit == false && filter_role == false) {
     const totalRows = await Users.count({
       where: {
-        [Op.and]: [{ nama: { [Op.substring]: nama } }],
+        nama: { [Op.substring]: nama },
       },
     });
 
@@ -866,7 +866,7 @@ export const getUsers = async (req, res) => {
 
     const users = await Users.findAll({
       where: {
-        [Op.and]: [{ nama: { [Op.substring]: nama } }],
+        nama: { [Op.substring]: nama },
       },
       include: [Units],
       offset: offset,
@@ -898,7 +898,7 @@ export const getUsers = async (req, res) => {
   if (filter_nama == false && filter_unit == true && filter_role == false) {
     const totalRows = await Users.count({
       where: {
-        [Op.and]: [{ id_unit: id_unit }],
+        id_unit: id_unit,
       },
     });
 
@@ -909,7 +909,7 @@ export const getUsers = async (req, res) => {
 
     const users = await Users.findAll({
       where: {
-        [Op.and]: [{ id_unit: id_unit }],
+        id_unit: id_unit,
       },
       include: [Units],
       offset: offset,
@@ -941,7 +941,7 @@ export const getUsers = async (req, res) => {
   if (filter_nama == false && filter_unit == false && filter_role == true) {
     const totalRows = await Users.count({
       where: {
-        [Op.and]: [{ role: role }],
+        role: role,
       },
     });
 
@@ -952,7 +952,7 @@ export const getUsers = async (req, res) => {
 
     const users = await Users.findAll({
       where: {
-        [Op.and]: [{ role: role }],
+        role: role,
       },
       include: [Units],
       offset: offset,
