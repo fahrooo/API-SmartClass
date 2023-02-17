@@ -1153,7 +1153,6 @@ export const deleteUsers = async (req, res) => {
       where: {
         id: id,
       },
-      attributes: ["id", "name", "email"],
     });
 
     if (userbyId.length > 0) {
@@ -1165,10 +1164,10 @@ export const deleteUsers = async (req, res) => {
 
       res.status(200).json({
         status: 200,
-        message: "Data Deleted successfully",
+        message: "Deleted successfully",
       });
     } else {
-      res.status(404).json({ status: 404, message: "Data Not Found" });
+      res.status(404).json({ status: 404, message: "User not found" });
     }
   } catch (error) {
     res.status(500).json({ status: 500, message: error.message });
