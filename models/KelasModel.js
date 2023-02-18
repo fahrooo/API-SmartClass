@@ -5,7 +5,7 @@ import db from "../config/Database.js";
 const { DataTypes } = Sequelize;
 
 const Kelas = db.define(
-  "kelas",
+  "classrooms",
   {
     id_unit: {
       type: DataTypes.INTEGER,

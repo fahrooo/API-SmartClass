@@ -12,14 +12,14 @@ export const getOperator = async (req, res) => {
   const limit = parseInt(req.body.limit);
   const offset = limit * page;
 
-  if (filter_nama == true && filter_unit == true && filter_kelas == true) {
-    Kelas.hasMany(OperatorKelas, { foreignKey: "id_kelas" });
-    OperatorKelas.belongsTo(Kelas, { foreignKey: "id_kelas" });
-    Users.hasMany(OperatorKelas, { foreignKey: "id_user" });
-    OperatorKelas.belongsTo(Users, { foreignKey: "id_user" });
-    Units.hasMany(Kelas, { foreignKey: "id_unit" });
-    Kelas.belongsTo(Units, { foreignKey: "id_unit" });
+  Kelas.hasMany(OperatorKelas, { foreignKey: "id_kelas" });
+  OperatorKelas.belongsTo(Kelas, { foreignKey: "id_kelas" });
+  Users.hasMany(OperatorKelas, { foreignKey: "id_user" });
+  OperatorKelas.belongsTo(Users, { foreignKey: "id_user" });
+  Units.hasMany(Kelas, { foreignKey: "id_unit" });
+  Kelas.belongsTo(Units, { foreignKey: "id_unit" });
 
+  if (filter_nama == true && filter_unit == true && filter_kelas == true) {
     const totalRows = await OperatorKelas.count({
       where: {
         id_kelas: id_kelas,
@@ -53,6 +53,198 @@ export const getOperator = async (req, res) => {
         {
           model: Users,
           where: { nama: { [Op.substring]: nama } },
+          attributes: ["id", "nama"],
+        },
+      ],
+      offset: offset,
+      limit: limit,
+    });
+
+    res.status(200).json({
+      status: operator.length ? 200 : 404,
+      message: operator.length ? "Data Found" : "Data Not Found",
+      data: operator.length ? operator : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + operator.length - 1,
+      totalRows: operator.length ? totalRows : null,
+      totalPage: operator.length ? totalPage : null,
+    });
+  }
+
+  if (filter_nama == true && filter_unit == true && filter_kelas == false) {
+    const totalRows = await OperatorKelas.count({
+      include: [
+        {
+          model: Kelas,
+          where: { id_unit: id_unit },
+          include: [Units],
+        },
+        {
+          model: Users,
+          where: { nama: { [Op.substring]: nama } },
+          attributes: ["id", "nama"],
+        },
+      ],
+    });
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    const operator = await OperatorKelas.findAll({
+      include: [
+        {
+          model: Kelas,
+          where: { id_unit: id_unit },
+          include: [Units],
+        },
+        {
+          model: Users,
+          where: { nama: { [Op.substring]: nama } },
+          attributes: ["id", "nama"],
+        },
+      ],
+      offset: offset,
+      limit: limit,
+    });
+
+    res.status(200).json({
+      status: operator.length ? 200 : 404,
+      message: operator.length ? "Data Found" : "Data Not Found",
+      data: operator.length ? operator : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + operator.length - 1,
+      totalRows: operator.length ? totalRows : null,
+      totalPage: operator.length ? totalPage : null,
+    });
+  }
+
+  if (filter_nama == false && filter_unit == true && filter_kelas == true) {
+    const totalRows = await OperatorKelas.count({
+      where: {
+        id_kelas: id_kelas,
+      },
+      include: [
+        {
+          model: Kelas,
+          where: { id_unit: id_unit },
+          include: [Units],
+        },
+        {
+          model: Users,
+          attributes: ["id", "nama"],
+        },
+      ],
+    });
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    const operator = await OperatorKelas.findAll({
+      where: {
+        id_kelas: id_kelas,
+      },
+      include: [
+        {
+          model: Kelas,
+          where: { id_unit: id_unit },
+          include: [Units],
+        },
+        {
+          model: Users,
+          attributes: ["id", "nama"],
+        },
+      ],
+      offset: offset,
+      limit: limit,
+    });
+
+    res.status(200).json({
+      status: operator.length ? 200 : 404,
+      message: operator.length ? "Data Found" : "Data Not Found",
+      data: operator.length ? operator : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + operator.length - 1,
+      totalRows: operator.length ? totalRows : null,
+      totalPage: operator.length ? totalPage : null,
+    });
+  }
+
+  if (filter_nama == true && filter_unit == false && filter_kelas == false) {
+    const totalRows = await OperatorKelas.count({
+      include: [
+        {
+          model: Kelas,
+          include: [Units],
+        },
+        {
+          model: Users,
+          where: { nama: { [Op.substring]: nama } },
+          attributes: ["id", "nama"],
+        },
+      ],
+    });
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    const operator = await OperatorKelas.findAll({
+      include: [
+        {
+          model: Kelas,
+          include: [Units],
+        },
+        {
+          model: Users,
+          where: { nama: { [Op.substring]: nama } },
+          attributes: ["id", "nama"],
+        },
+      ],
+      offset: offset,
+      limit: limit,
+    });
+
+    res.status(200).json({
+      status: operator.length ? 200 : 404,
+      message: operator.length ? "Data Found" : "Data Not Found",
+      data: operator.length ? operator : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + operator.length - 1,
+      totalRows: operator.length ? totalRows : null,
+      totalPage: operator.length ? totalPage : null,
+    });
+  }
+
+  if (filter_nama == false && filter_unit == true && filter_kelas == false) {
+    const totalRows = await OperatorKelas.count({
+      include: [
+        {
+          model: Kelas,
+          where: { id_unit: id_unit },
+          include: [Units],
+        },
+        {
+          model: Users,
+          attributes: ["id", "nama"],
+        },
+      ],
+    });
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    const operator = await OperatorKelas.findAll({
+      include: [
+        {
+          model: Kelas,
+          where: { id_unit: id_unit },
+          include: [Units],
+        },
+        {
+          model: Users,
           attributes: ["id", "nama"],
         },
       ],
