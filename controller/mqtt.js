@@ -7,7 +7,6 @@ export const publishMessage = async (req, res) => {
   const topic = req.body.topic;
   const message = req.body.message;
 
-  console.log(process.env.MQTT_HOST);
   try {
     const url = process.env.MQTT_HOST;
     let client = mqtt.connect(url);
@@ -34,6 +33,7 @@ export const publishMessage = async (req, res) => {
 
 export const subscribeMessage = async (req, res) => {
   const topic = req.body.topic;
+
   try {
     const url = process.env.MQTT_HOST;
     let client = mqtt.connect(url);
