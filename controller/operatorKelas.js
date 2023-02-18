@@ -304,3 +304,92 @@ export const postOperator = async (req, res) => {
     });
   }
 };
+
+export const putOperator = async (req, res) => {
+  const id = req.params.id;
+  const { id_user, id_kelas } = req.body;
+
+  const operatorbyid = await OperatorKelas.findAll({
+    where: {
+      id: id,
+    },
+  });
+
+  if (operatorbyid.length == 0) {
+    return res.status(200).json({
+      status: 400,
+      message: "Operator not found",
+    });
+  }
+
+  const checkOperatorKelas = await OperatorKelas.findAll({
+    where: {
+      [Op.and]: [
+        {
+          id_user: id_user,
+        },
+        { id_kelas: id_kelas },
+      ],
+    },
+  });
+
+  if (checkOperatorKelas.length > 0) {
+    return res.status(200).json({
+      status: 400,
+      message: "Operator already exist",
+    });
+  }
+
+  try {
+    const operator = await OperatorKelas.update(
+      {
+        id_user: id_user,
+        id_kelas: id_kelas,
+      },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+
+    return res.status(200).json({
+      status: 200,
+      message: "Updated successfully",
+    });
+  } catch (error) {
+    return res.status(200).json({
+      status: 400,
+      message: "Updated failed",
+    });
+  }
+};
+
+export const deleteOperator = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const operatorbyid = await OperatorKelas.findAll({
+      where: {
+        id: id,
+      },
+    });
+
+    if (operatorbyid.length > 0) {
+      const operator = await OperatorKelas.destroy({
+        where: {
+          id: id,
+        },
+      });
+
+      res.status(200).json({
+        status: 200,
+        message: "Deleted successfully",
+      });
+    } else {
+      res.status(404).json({ status: 404, message: "Operator not found" });
+    }
+  } catch (error) {
+    res.status(200).json({ status: 400, message: "Deleted failed" });
+  }
+};

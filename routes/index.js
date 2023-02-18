@@ -26,7 +26,12 @@ import {
   postKelas,
   putKelas,
 } from "../controller/Kelas.js";
-import { getOperator, postOperator } from "../controller/operatorKelas.js";
+import {
+  deleteOperator,
+  getOperator,
+  postOperator,
+  putOperator,
+} from "../controller/operatorKelas.js";
 import {} from "../controller/datastream.js";
 import {} from "../controller/perangkatKelas.js";
 import {} from "../controller/waktu.js";
@@ -69,8 +74,8 @@ router.delete("/kelas/delete/:id", deleteKelas);
 //CRUD Operator
 router.post("/operator", getOperator);
 router.post("/operator/create", postOperator);
-router.put("/operator/update/:id", putKelas);
-router.delete("/operator/delete/:id", deleteKelas);
+router.put("/operator/update/:id", putOperator);
+router.delete("/operator/delete/:id", deleteOperator);
 
 //MQTT Perangkat
 router.post("/relaypost", relayPost);
