@@ -18,6 +18,9 @@ const Datastream = db.define(
     turn_off: {
       type: DataTypes.STRING,
     },
+    default_value: {
+      type: DataTypes.INTEGER,
+    },
     max_value: {
       type: DataTypes.INTEGER,
     },

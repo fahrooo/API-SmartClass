@@ -13,7 +13,6 @@ import {
   postUsers,
   putUsers,
 } from "../controller/Users.js";
-import { relayGet, relayPost } from "../controller/Perangkat.js";
 import {
   deleteUnits,
   getUnits,
@@ -39,6 +38,7 @@ import {} from "../controller/booking";
 
 import { verifyToken } from "../middleware/VerifyToken.js";
 import { refreshToken } from "../controller/RefreshToken.js";
+import { publishMessage, subscribeMessage } from "../controller/mqtt.js";
 
 const router = express.Router();
 
@@ -77,8 +77,8 @@ router.post("/operator/create", postOperator);
 router.put("/operator/update/:id", putOperator);
 router.delete("/operator/delete/:id", deleteOperator);
 
-//MQTT Perangkat
-router.post("/relaypost", relayPost);
-router.post("/relayget", relayGet);
+//MQTT
+router.post("/mqtt/publish", publishMessage);
+router.post("/mqtt/subscribe", subscribeMessage);
 
 export default router;

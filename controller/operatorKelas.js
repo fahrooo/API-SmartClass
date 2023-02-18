@@ -264,6 +264,50 @@ export const getOperator = async (req, res) => {
       totalPage: operator.length ? totalPage : null,
     });
   }
+
+  if (filter_nama == false && filter_unit == false && filter_kelas == false) {
+    const totalRows = await OperatorKelas.count({
+      include: [
+        {
+          model: Kelas,
+          include: [Units],
+        },
+        {
+          model: Users,
+          attributes: ["id", "nama"],
+        },
+      ],
+    });
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    const operator = await OperatorKelas.findAll({
+      include: [
+        {
+          model: Kelas,
+          include: [Units],
+        },
+        {
+          model: Users,
+          attributes: ["id", "nama"],
+        },
+      ],
+      offset: offset,
+      limit: limit,
+    });
+
+    res.status(200).json({
+      status: operator.length ? 200 : 404,
+      message: operator.length ? "Data Found" : "Data Not Found",
+      data: operator.length ? operator : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + operator.length - 1,
+      totalRows: operator.length ? totalRows : null,
+      totalPage: operator.length ? totalPage : null,
+    });
+  }
 };
 
 export const postOperator = async (req, res) => {
