@@ -31,7 +31,12 @@ import {
   postOperator,
   putOperator,
 } from "../controller/operatorKelas.js";
-import {} from "../controller/datastream.js";
+import {
+  deleteDatastream,
+  getDatastream,
+  postDatastream,
+  putDatastream,
+} from "../controller/datastream.js";
 import {} from "../controller/perangkatKelas.js";
 import {} from "../controller/waktu.js";
 import {} from "../controller/booking";
@@ -39,6 +44,12 @@ import {} from "../controller/booking";
 import { verifyToken } from "../middleware/VerifyToken.js";
 import { refreshToken } from "../controller/RefreshToken.js";
 import { publishMessage, subscribeMessage } from "../controller/mqtt.js";
+import {
+  deletePerangkat,
+  getPerangkat,
+  postPerangkat,
+  putPerangkat,
+} from "../controller/Perangkat.js";
 
 const router = express.Router();
 
@@ -76,6 +87,18 @@ router.post("/operator", getOperator);
 router.post("/operator/create", postOperator);
 router.put("/operator/update/:id", putOperator);
 router.delete("/operator/delete/:id", deleteOperator);
+
+//CRUD Perangkat
+router.post("/perangkat", getPerangkat);
+router.post("/perangkat/create", postPerangkat);
+router.put("/perangkat/update/:id", putPerangkat);
+router.delete("/perangkat/delete/:id", deletePerangkat);
+
+//CRUD Datastream
+router.post("/datastream", getDatastream);
+router.post("/datastream/create", postDatastream);
+router.put("/datastream/update/:id", putDatastream);
+router.delete("/datastream/delete/:id", deleteDatastream);
 
 //MQTT
 router.post("/mqtt/publish", publishMessage);
