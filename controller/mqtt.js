@@ -6,6 +6,7 @@ dotenv.config();
 export const publishMessage = async (req, res) => {
   const topic = req.body.topic;
   const message = req.body.message;
+  console.log(message);
 
   try {
     const url = process.env.MQTT_HOST;

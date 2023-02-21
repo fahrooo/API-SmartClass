@@ -37,9 +37,24 @@ import {
   postDatastream,
   putDatastream,
 } from "../controller/datastream.js";
-import {} from "../controller/perangkatKelas.js";
-import {} from "../controller/waktu.js";
-import {} from "../controller/booking";
+import {
+  deletePerangkatKelas,
+  getPerangkatKelas,
+  postPerangkatKelas,
+  putPerangkatKelas,
+} from "../controller/perangkatKelas.js";
+import {
+  deleteWaktu,
+  getWaktu,
+  postWaktu,
+  putWaktu,
+} from "../controller/waktu.js";
+import {
+  deleteBooking,
+  getBooking,
+  postBooking,
+  putBooking,
+} from "../controller/booking";
 
 import { verifyToken } from "../middleware/VerifyToken.js";
 import { refreshToken } from "../controller/RefreshToken.js";
@@ -99,6 +114,24 @@ router.post("/datastream", getDatastream);
 router.post("/datastream/create", postDatastream);
 router.put("/datastream/update/:id", putDatastream);
 router.delete("/datastream/delete/:id", deleteDatastream);
+
+//CRUD Perangkat Kelas
+router.post("/perangkatkelas", getPerangkatKelas);
+router.post("/perangkatkelas/create", postPerangkatKelas);
+router.put("/perangkatkelas/update/:id", putPerangkatKelas);
+router.delete("/perangkatkelas/delete/:id", deletePerangkatKelas);
+
+//CRUD Waktu
+router.get("/waktu", getWaktu);
+router.post("/waktu/create", postWaktu);
+router.put("/waktu/update/:id", putWaktu);
+router.delete("/waktu/delete/:id", deleteWaktu);
+
+//CRUD Booking
+router.post("/booking", getBooking);
+router.post("/booking/create", postBooking);
+router.put("/booking/update/:id", putBooking);
+router.delete("/booking/delete/:id", deleteBooking);
 
 //MQTT
 router.post("/mqtt/publish", publishMessage);
