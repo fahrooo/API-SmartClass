@@ -21,7 +21,7 @@ io.on("connection", (socket) => {
   console.log(`User connected to ${socket.id}`);
 
   socket.on("hello", (e) => {
-    console.log(e?.message);
+    console.log(e);
   });
 });
 
