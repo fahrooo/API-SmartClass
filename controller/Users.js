@@ -6,12 +6,29 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import otpGenerator from "otp-generator";
 import Units from "../models/UnitsModel";
+import generator from "generate-password";
 
 dotenv.config();
 
+export const Me = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const me = await Users.findOne({
+      where: { id: id },
+      attributes: ["id_unit", "nama", "role"],
+    });
+
+    return res.status(200).json({
+      status: 200,
+      message: "Data session",
+      data: me,
+    });
+  } catch (error) {}
+};
+
 export const Register = async (req, res) => {
-  const { nama, email, nik, id_unit, jabatan, password, confPassword } =
-    req.body;
+  const { nama, email, nik, id_unit, password, confPassword } = req.body;
 
   if (password !== confPassword) {
     return res.status(200).json({
@@ -132,7 +149,6 @@ export const Register = async (req, res) => {
           nama: nama,
           nik: nik,
           id_unit: id_unit,
-          jabatan: jabatan,
           role: "peserta",
           email: email,
           password: hashPassword,
@@ -621,7 +637,7 @@ export const Login = async (req, res) => {
     res.status(200).json({
       status: 200,
       message: "Berhasil Login",
-      data: { id: userId, nama, email, unit, role },
+      data: { id: userId },
       accessToken,
     });
   } catch (error) {
@@ -697,17 +713,10 @@ export const getUsers = async (req, res) => {
         ],
       },
       include: [Units],
+      order: [["nama", "ASC"]],
       offset: offset,
       limit: limit,
-      attributes: [
-        "id",
-        "nik",
-        "nama",
-        "email",
-        "jabatan",
-        "is_active",
-        "role",
-      ],
+      attributes: ["id", "nik", "nama", "email", "is_active", "role"],
     });
 
     res.status(200).json({
@@ -732,7 +741,7 @@ export const getUsers = async (req, res) => {
 
     const totalPage = Math.ceil(totalRows / limit);
 
-    Units.hasMany(Users, { primaryKey: "id" });
+    Units.hasMany(Users, { foreignKey: "id" });
     Users.belongsTo(Units, { foreignKey: "id_unit" });
 
     const users = await Users.findAll({
@@ -740,17 +749,10 @@ export const getUsers = async (req, res) => {
         [Op.and]: [{ nama: { [Op.substring]: nama } }, { id_unit: id_unit }],
       },
       include: [Units],
+      order: [["nama", "ASC"]],
       offset: offset,
       limit: limit,
-      attributes: [
-        "id",
-        "nik",
-        "nama",
-        "email",
-        "jabatan",
-        "is_active",
-        "role",
-      ],
+      attributes: ["id", "nik", "nama", "email", "is_active", "role"],
     });
 
     res.status(200).json({
@@ -775,7 +777,7 @@ export const getUsers = async (req, res) => {
 
     const totalPage = Math.ceil(totalRows / limit);
 
-    Units.hasMany(Users, { primaryKey: "id" });
+    Units.hasMany(Users, { foreignKey: "id" });
     Users.belongsTo(Units, { foreignKey: "id_unit" });
 
     const users = await Users.findAll({
@@ -783,17 +785,10 @@ export const getUsers = async (req, res) => {
         [Op.and]: [{ nama: { [Op.substring]: nama } }, { role: role }],
       },
       include: [Units],
+      order: [["nama", "ASC"]],
       offset: offset,
       limit: limit,
-      attributes: [
-        "id",
-        "nik",
-        "nama",
-        "email",
-        "jabatan",
-        "is_active",
-        "role",
-      ],
+      attributes: ["id", "nik", "nama", "email", "is_active", "role"],
     });
 
     res.status(200).json({
@@ -818,7 +813,7 @@ export const getUsers = async (req, res) => {
 
     const totalPage = Math.ceil(totalRows / limit);
 
-    Units.hasMany(Users, { primaryKey: "id" });
+    Units.hasMany(Users, { foreignKey: "id" });
     Users.belongsTo(Units, { foreignKey: "id_unit" });
 
     const users = await Users.findAll({
@@ -826,17 +821,10 @@ export const getUsers = async (req, res) => {
         [Op.and]: [{ id_unit: id_unit }, { role: role }],
       },
       include: [Units],
+      order: [["nama", "ASC"]],
       offset: offset,
       limit: limit,
-      attributes: [
-        "id",
-        "nik",
-        "nama",
-        "email",
-        "jabatan",
-        "is_active",
-        "role",
-      ],
+      attributes: ["id", "nik", "nama", "email", "is_active", "role"],
     });
 
     res.status(200).json({
@@ -861,7 +849,7 @@ export const getUsers = async (req, res) => {
 
     const totalPage = Math.ceil(totalRows / limit);
 
-    Units.hasMany(Users, { primaryKey: "id" });
+    Units.hasMany(Users, { foreignKey: "id" });
     Users.belongsTo(Units, { foreignKey: "id_unit" });
 
     const users = await Users.findAll({
@@ -869,17 +857,10 @@ export const getUsers = async (req, res) => {
         nama: { [Op.substring]: nama },
       },
       include: [Units],
+      order: [["nama", "ASC"]],
       offset: offset,
       limit: limit,
-      attributes: [
-        "id",
-        "nik",
-        "nama",
-        "email",
-        "jabatan",
-        "is_active",
-        "role",
-      ],
+      attributes: ["id", "nik", "nama", "email", "is_active", "role"],
     });
 
     res.status(200).json({
@@ -904,7 +885,7 @@ export const getUsers = async (req, res) => {
 
     const totalPage = Math.ceil(totalRows / limit);
 
-    Units.hasMany(Users, { primaryKey: "id" });
+    Units.hasMany(Users, { foreignKey: "id" });
     Users.belongsTo(Units, { foreignKey: "id_unit" });
 
     const users = await Users.findAll({
@@ -912,17 +893,10 @@ export const getUsers = async (req, res) => {
         id_unit: id_unit,
       },
       include: [Units],
+      order: [["nama", "ASC"]],
       offset: offset,
       limit: limit,
-      attributes: [
-        "id",
-        "nik",
-        "nama",
-        "email",
-        "jabatan",
-        "is_active",
-        "role",
-      ],
+      attributes: ["id", "nik", "nama", "email", "is_active", "role"],
     });
 
     res.status(200).json({
@@ -947,7 +921,7 @@ export const getUsers = async (req, res) => {
 
     const totalPage = Math.ceil(totalRows / limit);
 
-    Units.hasMany(Users, { primaryKey: "id" });
+    Units.hasMany(Users, { foreignKey: "id" });
     Users.belongsTo(Units, { foreignKey: "id_unit" });
 
     const users = await Users.findAll({
@@ -955,17 +929,10 @@ export const getUsers = async (req, res) => {
         role: role,
       },
       include: [Units],
+      order: [["nama", "ASC"]],
       offset: offset,
       limit: limit,
-      attributes: [
-        "id",
-        "nik",
-        "nama",
-        "email",
-        "jabatan",
-        "is_active",
-        "role",
-      ],
+      attributes: ["id", "nik", "nama", "email", "is_active", "role"],
     });
 
     res.status(200).json({
@@ -986,22 +953,15 @@ export const getUsers = async (req, res) => {
 
     const totalPage = Math.ceil(totalRows / limit);
 
-    Units.hasMany(Users, { primaryKey: "id" });
+    Units.hasMany(Users, { foreignKey: "id" });
     Users.belongsTo(Units, { foreignKey: "id_unit" });
 
     const users = await Users.findAll({
       include: [Units],
+      order: [["nama", "ASC"]],
       offset: offset,
       limit: limit,
-      attributes: [
-        "id",
-        "nik",
-        "nama",
-        "email",
-        "jabatan",
-        "is_active",
-        "role",
-      ],
+      attributes: ["id", "nik", "nama", "email", "is_active", "role"],
     });
 
     res.status(200).json({
@@ -1018,16 +978,43 @@ export const getUsers = async (req, res) => {
   }
 };
 
-export const postUsers = async (req, res) => {
-  const { nama, email, nik, id_unit, jabatan, password, confPassword } =
-    req.body;
+export const getUsersbyId = async (req, res) => {
+  const id = req.params.id;
 
-  if (password !== confPassword) {
+  Units.hasMany(Users, { foreignKey: "id" });
+  Users.belongsTo(Units, { foreignKey: "id_unit" });
+
+  const checkUserById = await Users.findByPk(id, {
+    include: [Units],
+    order: [["nama", "ASC"]],
+  });
+
+  if (checkUserById === null) {
     return res.status(200).json({
-      status: 400,
-      message: "Password dan Confirm Password Tidak Sama",
+      status: 404,
+      message: "User not found",
     });
   }
+
+  return res.status(200).json({
+    status: 200,
+    message: "User found",
+    data: checkUserById,
+  });
+};
+
+export const postUsers = async (req, res) => {
+  const { nama, email, nik, id_unit, role, is_active } = req.body;
+
+  const password = generator.generate({
+    length: 8,
+    numbers: true,
+    symbols: true,
+    lowercase: true,
+    uppercase: true,
+    excludeSimilarCharacters: true,
+    strict: true,
+  });
 
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
@@ -1058,26 +1045,111 @@ export const postUsers = async (req, res) => {
     });
   }
 
-  const users = await Users.create({
-    nama: nama,
-    nik: nik,
-    id_unit: id_unit,
-    jabatan: jabatan,
-    role: "peserta",
-    email: email,
-    password: hashPassword,
-    is_active: false,
-  });
+  try {
+    const source = `<div
+        style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 50vh;
+          margin-left: auto;
+          margin-right: auto;
+        "
+      >
+        <div
+          style="
+            background-color: #eef1f2;
+            width: 639px;
+            height: 350px;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            border-radius: 40px;
+          "
+        >
+          <div
+            style="
+              background-color: #355d77;
+              padding-left: 20px;
+              padding-right: 20px;
+              height: 70px;
+              justify-content: center;
+              align-items: center;
+              display: flex;
+              border-top-left-radius: 40px;
+              border-top-right-radius: 40px;
+              margin-left: auto;
+              margin-right: auto;
+            "
+          >
+            <div style="margin-left: auto; margin-right: auto">
+              <h1 style="color: #ffffff">Innovation Connect</h1>
+            </div>
+          </div>
+          <div style="padding: 30px;">
+            <p style="margin-bottom: 0px; font-size: 20px">Selamat datang,</p>
+            <p style="margin: 0px; margin-top: 10px; font-size: 20px">
+              Berikut password akun aplikasi <strong>Innovation Connect</strong> anda
+            </p>
+          </div>
+          <div style="padding-left: 100px; padding-right: 100px">
+            <div style="background-color: #d9d9d9">
+              <h1 style="font-size: 30px">${password}</h1>
+            </div>
+          </div>
+        </div>
+      </div>`;
 
-  return res.status(200).json({
-    status: 200,
-    message: "Created successfully",
-  });
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mail_config = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Verifikasi Email",
+      html: source,
+    };
+
+    transporter.sendMail(mail_config, async function (err, info) {
+      if (!err) {
+        const users = await Users.create({
+          nama: nama,
+          nik: nik,
+          id_unit: id_unit,
+          role: role,
+          email: email,
+          password: hashPassword,
+          is_active: is_active,
+        });
+
+        return res.status(200).json({
+          status: 200,
+          message: "Created successfully",
+        });
+      } else {
+        return res.status(200).json({
+          status: 400,
+          message: "Email not sent",
+          data: err.message,
+        });
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server Error",
+    });
+  }
 };
 
 export const putUsers = async (req, res) => {
-  const { nama, email, nik, id_unit, jabatan, password, confPassword } =
-    req.body;
+  const { nama, email, nik, id_unit, role, is_active } = req.body;
   const id = req.params.id;
 
   const userbyid = await Users.findAll({ where: { id: id } });
@@ -1089,52 +1161,14 @@ export const putUsers = async (req, res) => {
     });
   }
 
-  if (password !== confPassword) {
-    return res.status(200).json({
-      status: 400,
-      message: "Password dan Confirm Password Tidak Sama",
-    });
-  }
-
-  const salt = await bcrypt.genSalt();
-  const hashPassword = await bcrypt.hash(password, salt);
-
-  const checkEmailUser = await Users.findAll({
-    where: {
-      email: email,
-    },
-  });
-
-  const checkNikUser = await Users.findAll({
-    where: {
-      nik: nik,
-    },
-  });
-
-  if (checkNikUser.length > 0) {
-    return res.status(200).json({
-      status: 400,
-      message: "NIK already exist",
-    });
-  }
-
-  if (checkEmailUser.length > 0) {
-    return res.status(200).json({
-      status: 400,
-      message: "Email already exist",
-    });
-  }
-
   const users = await Users.update(
     {
       nama: nama,
       nik: nik,
       id_unit: id_unit,
-      jabatan: jabatan,
-      role: "peserta",
+      role: role,
       email: email,
-      password: hashPassword,
-      is_active: false,
+      is_active: is_active,
     },
     { where: { id: id } }
   );
@@ -1167,7 +1201,7 @@ export const deleteUsers = async (req, res) => {
         message: "Deleted successfully",
       });
     } else {
-      res.status(404).json({ status: 404, message: "User not found" });
+      res.status(200).json({ status: 404, message: "User not found" });
     }
   } catch (error) {
     res.status(500).json({ status: 500, message: error.message });

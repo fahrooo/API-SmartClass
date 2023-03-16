@@ -12,6 +12,8 @@ import {
   updatePassword,
   postUsers,
   putUsers,
+  Me,
+  getUsersbyId,
 } from "../controller/Users.js";
 import {
   deleteUnits,
@@ -58,7 +60,11 @@ import {
 
 import { verifyToken } from "../middleware/VerifyToken.js";
 import { refreshToken } from "../controller/RefreshToken.js";
-import { publishMessage, subscribeMessage } from "../controller/mqtt.js";
+import {
+  publishMessage,
+  sendBufferAudio,
+  subscribeMessage,
+} from "../controller/mqtt.js";
 import {
   deletePerangkat,
   getPerangkat,
@@ -69,6 +75,7 @@ import {
 const router = express.Router();
 
 //Authitentication
+router.get("/me/:id", verifyToken, Me);
 router.post("/register", Register);
 router.post("/login", Login);
 router.get("/token", refreshToken);
@@ -80,10 +87,11 @@ router.post("/updateemailverify", updateEmail);
 router.post("/updatepassword", updatePassword);
 
 //CRUD Users
-router.post("/users", getUsers);
-router.post("/users/create", postUsers);
-router.put("/users/update/:id", putUsers);
-router.delete("/users/delete/:id", deleteUsers);
+router.post("/users", verifyToken, getUsers);
+router.get("/users/:id", verifyToken, getUsersbyId);
+router.post("/users/create", verifyToken, postUsers);
+router.put("/users/update/:id", verifyToken, putUsers);
+router.delete("/users/delete/:id", verifyToken, deleteUsers);
 
 //CRUD Units
 router.get("/units", getUnits);
@@ -134,7 +142,8 @@ router.put("/booking/update/:id", putBooking);
 router.delete("/booking/delete/:id", deleteBooking);
 
 //MQTT
-router.post("/mqtt/publish", publishMessage);
+router.post("/mqtt/publish", verifyToken, publishMessage);
 router.post("/mqtt/subscribe", subscribeMessage);
+router.post("/websocket/sendbufferaudio", sendBufferAudio);
 
 export default router;

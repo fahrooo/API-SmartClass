@@ -15,12 +15,8 @@ const Users = db.define(
     id_unit: {
       type: DataTypes.INTEGER,
     },
-    jabatan: {
-      type: DataTypes.STRING,
-    },
     role: {
-      type: DataTypes.ENUM,
-      values: ["super admin", "admin", "operator", "peserta"],
+      type: DataTypes.STRING,
     },
     email: {
       type: DataTypes.STRING,

@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@xdcobra/node-ffmpeg-stream": "^1.3.0",
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -18,6 +19,7 @@
     "eiows": "^4.1.2",
     "email-existence": "^0.1.6",
     "express": "^4.18.2",
+    "generate-password": "^1.7.0",
     "handlebars": "^4.7.7",
     "jsonwebtoken": "^8.5.1",
     "mqtt": "^4.3.7",
@@ -26,6 +28,7 @@
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.25.5",
-    "socket.io": "^4.6.1"
+    "socket.io": "^4.6.1",
+    "ws": "^8.12.1"
   }
 }

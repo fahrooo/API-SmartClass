@@ -1,5 +1,6 @@
 import * as mqtt from "mqtt";
 import dotenv from "dotenv";
+import { WebSocket } from "ws";
 
 dotenv.config();
 
@@ -23,13 +24,7 @@ export const publishMessage = async (req, res) => {
         },
       });
     });
-  } catch (error) {
-    return res.status(500).json({
-      status: 500,
-      message: "Internal Server Error",
-      message: error,
-    });
-  }
+  } catch (error) {}
 };
 
 export const subscribeMessage = async (req, res) => {
@@ -48,18 +43,34 @@ export const subscribeMessage = async (req, res) => {
 
     await client.on("message", (topic, payload) => {
       // console.log("Received Message:", topic, payload.toString());
-      client.end();
-      return res.status(200).json({
-        status: 200,
-        message: payload.toString(),
-      });
+      if (payload) {
+        client.end();
+        return res.status(200).json({
+          status: 200,
+          message: payload.toString(),
+        });
+      } else {
+        return res.status(200).json({
+          status: 400,
+          message: "Data not found",
+        });
+      }
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      status: 500,
-      message: "Internal Server Error",
-      message: error,
+  }
+};
+
+export const sendBufferAudio = async (req, res) => {
+  const buffer = req.body.buffer;
+
+  try {
+    const ws = new WebSocket("ws://localhost:8000/getbuffer");
+    ws.on("error", console.error);
+    ws.on("open", function open() {
+      ws.send(buffer);
     });
+  } catch (error) {
+    console.log(error);
   }
 };

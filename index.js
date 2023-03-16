@@ -6,6 +6,9 @@ import db from "./config/Database.js";
 import router from "./routes/index.js";
 import { Server } from "socket.io";
 import http from "http";
+import { PictureStream } from "@xdcobra/node-ffmpeg-stream";
+import * as mqtt from "mqtt";
+import { connect } from "http2";
 
 dotenv.config();
 
@@ -24,6 +27,37 @@ io.on("connection", (socket) => {
     console.log(e);
   });
 });
+
+// const pictureStream = new PictureStream();
+
+// const url = process.env.MQTT_HOST;
+// let client = mqtt.connect(url);
+
+// client.on("connect", function () {
+//   console.log("MQTT connect");
+//   const input = {
+//     name: "BardiIpCam",
+//     url: "rtsp://admin:admin@192.168.237.60:8554/Streaming/Channels/101",
+//     fps: 30,
+//     ffmpegOptions: {
+//       "-vf": "scale=200:160",
+//     },
+//   };
+//   const pstream = pictureStream.startStream(input);
+
+//   pstream
+//     .on("data", (data) => {
+//       // encode to base64, to show it later in browser
+//       const base64 = Buffer.from(data).toString("base64");
+//       console.log(base64);
+
+//       // publish
+//       client.publish("IPCAM", base64);
+//     })
+//     .on("error", (error) => {
+//       console.log(error);
+//     });
+// });
 
 try {
   await db.authenticate();
