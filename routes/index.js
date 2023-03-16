@@ -94,7 +94,7 @@ router.put("/users/update/:id", verifyToken, putUsers);
 router.delete("/users/delete/:id", verifyToken, deleteUsers);
 
 //CRUD Units
-router.get("/units", getUnits);
+router.get("/units", verifyToken, getUnits);
 router.post("/units/create", postUnits);
 router.put("/units/update/:id", putUnits);
 router.delete("/units/delete/:id", deleteUnits);
