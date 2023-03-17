@@ -579,6 +579,126 @@ export const updatePassword = async (req, res) => {
   }
 };
 
+export const resetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  const password = generator.generate({
+    length: 8,
+    numbers: true,
+    symbols: true,
+    lowercase: true,
+    uppercase: true,
+    excludeSimilarCharacters: true,
+    strict: true,
+  });
+
+  const salt = await bcrypt.genSalt();
+  const hashPassword = await bcrypt.hash(password, salt);
+
+  try {
+    const source = `<div
+        style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 50vh;
+          margin-left: auto;
+          margin-right: auto;
+        "
+      >
+        <div
+          style="
+            background-color: #eef1f2;
+            width: 639px;
+            height: 350px;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            border-radius: 40px;
+          "
+        >
+          <div
+            style="
+              background-color: #355d77;
+              padding-left: 20px;
+              padding-right: 20px;
+              height: 70px;
+              justify-content: center;
+              align-items: center;
+              display: flex;
+              border-top-left-radius: 40px;
+              border-top-right-radius: 40px;
+              margin-left: auto;
+              margin-right: auto;
+            "
+          >
+            <div style="margin-left: auto; margin-right: auto">
+              <h1 style="color: #ffffff">Innovation Connect</h1>
+            </div>
+          </div>
+          <div style="padding: 30px;">
+            <p style="margin-bottom: 0px; font-size: 20px">Selamat datang,</p>
+            <p style="margin: 0px; margin-top: 10px; font-size: 20px">
+              Berikut password akun aplikasi <strong>Innovation Connect</strong> anda
+            </p>
+          </div>
+          <div style="padding-left: 100px; padding-right: 100px">
+            <div style="background-color: #d9d9d9">
+              <h1 style="font-size: 30px">${password}</h1>
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mail_config = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Verifikasi Email",
+      html: source,
+    };
+
+    transporter.sendMail(mail_config, async function (err, info) {
+      if (!err) {
+        const users = await Users.update(
+          {
+            password: hashPassword,
+          },
+          {
+            where: {
+              email: email,
+            },
+          }
+        );
+
+        return res.status(200).json({
+          status: 200,
+          message: "Reset Password successfully",
+        });
+      } else {
+        return res.status(200).json({
+          status: 400,
+          message: "Email not sent",
+          data: err.message,
+        });
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export const Login = async (req, res) => {
   try {
     const user = await Users.findAll({

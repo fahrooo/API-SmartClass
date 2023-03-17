@@ -14,6 +14,7 @@ import {
   putUsers,
   Me,
   getUsersbyId,
+  resetPassword,
 } from "../controller/Users.js";
 import {
   deleteUnits,
@@ -92,6 +93,7 @@ router.get("/users/:id", verifyToken, getUsersbyId);
 router.post("/users/create", verifyToken, postUsers);
 router.put("/users/update/:id", verifyToken, putUsers);
 router.delete("/users/delete/:id", verifyToken, deleteUsers);
+router.post("/resetpassword", verifyToken, resetPassword);
 
 //CRUD Units
 router.get("/units", verifyToken, getUnits);
