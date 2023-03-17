@@ -19,6 +19,7 @@ import {
 import {
   deleteUnits,
   getUnits,
+  getUnitsAll,
   postUnits,
   putUnits,
 } from "../controller/Units.js";
@@ -96,7 +97,8 @@ router.delete("/users/delete/:id", verifyToken, deleteUsers);
 router.post("/resetpassword", verifyToken, resetPassword);
 
 //CRUD Units
-router.get("/units", verifyToken, getUnits);
+router.get("/units", getUnitsAll);
+router.post("/units", getUnits);
 router.post("/units/create", postUnits);
 router.put("/units/update/:id", putUnits);
 router.delete("/units/delete/:id", deleteUnits);

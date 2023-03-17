@@ -1,9 +1,9 @@
 import Units from "../models/UnitsModel";
 import { Op, where } from "sequelize";
 
-export const getUnits = async (req, res) => {
+export const getUnitsAll = async (req, res) => {
   try {
-    const unit = await Units.findAll();
+    const unit = await Units.findAll({ order: [["nama", "ASC"]] });
 
     return res.status(200).json({
       status: 200,
@@ -14,6 +14,66 @@ export const getUnits = async (req, res) => {
       status: 500,
       msg: "Internal Server Error",
       error: error,
+    });
+  }
+};
+
+export const getUnits = async (req, res) => {
+  const { filter_nama, nama } = req.body;
+  const page = parseInt(req.body.page) - 1;
+  const limit = parseInt(req.body.limit);
+  const offset = limit * page;
+
+  if (filter_nama == true) {
+    const totalRows = await Units.count({
+      where: {
+        nama: { [Op.substring]: nama },
+      },
+    });
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    const users = await Units.findAll({
+      where: {
+        nama: { [Op.substring]: nama },
+      },
+      order: [["nama", "ASC"]],
+      offset: offset,
+      limit: limit,
+    });
+
+    res.status(200).json({
+      status: users.length ? 200 : 404,
+      message: users.length ? "Data Found" : "Data Not Found",
+      data: users.length ? users : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + users.length - 1,
+      totalRows: users.length ? totalRows : null,
+      totalPage: users.length ? totalPage : null,
+    });
+  } else {
+    const totalRows = await Units.count({});
+
+    const totalPage = Math.ceil(totalRows / limit);
+
+    const users = await Units.findAll({
+      order: [["nama", "ASC"]],
+      offset: offset,
+      limit: limit,
+    });
+
+    res.status(200).json({
+      status: users.length ? 200 : 404,
+      message: users.length ? "Data Found" : "Data Not Found",
+      data: users.length ? users : null,
+      page: page + 1,
+      limit: limit,
+      rows: offset + 1,
+      rowsPage: offset + 1 + users.length - 1,
+      totalRows: users.length ? totalRows : null,
+      totalPage: users.length ? totalPage : null,
     });
   }
 };
