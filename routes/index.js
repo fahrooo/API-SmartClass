@@ -20,6 +20,7 @@ import {
   deleteUnits,
   getUnits,
   getUnitsAll,
+  getUnitsbyId,
   postUnits,
   putUnits,
 } from "../controller/Units.js";
@@ -98,10 +99,11 @@ router.post("/resetpassword", verifyToken, resetPassword);
 
 //CRUD Units
 router.get("/units", getUnitsAll);
-router.post("/units", getUnits);
-router.post("/units/create", postUnits);
-router.put("/units/update/:id", putUnits);
-router.delete("/units/delete/:id", deleteUnits);
+router.post("/units", verifyToken, getUnits);
+router.get("/units/:id", verifyToken, getUnitsbyId);
+router.post("/units/create", verifyToken, postUnits);
+router.put("/units/update/:id", verifyToken, putUnits);
+router.delete("/units/delete/:id", verifyToken, deleteUnits);
 
 //CRUD Kelas
 router.post("/kelas", getKelas);

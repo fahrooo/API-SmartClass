@@ -78,6 +78,25 @@ export const getUnits = async (req, res) => {
   }
 };
 
+export const getUnitsbyId = async (req, res) => {
+  const id = req.params.id;
+
+  const checkUnitById = await Units.findByPk(id);
+
+  if (checkUnitById === null) {
+    return res.status(200).json({
+      status: 404,
+      message: "User not found",
+    });
+  }
+
+  return res.status(200).json({
+    status: 200,
+    message: "User found",
+    data: checkUnitById,
+  });
+};
+
 export const postUnits = async (req, res) => {
   const nama = req.body.nama;
 
