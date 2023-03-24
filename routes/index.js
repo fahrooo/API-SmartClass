@@ -27,6 +27,7 @@ import {
 import {
   deleteKelas,
   getKelas,
+  getKelasbyId,
   postKelas,
   putKelas,
 } from "../controller/Kelas.js";
@@ -106,10 +107,11 @@ router.put("/units/update/:id", verifyToken, putUnits);
 router.delete("/units/delete/:id", verifyToken, deleteUnits);
 
 //CRUD Kelas
-router.post("/kelas", getKelas);
-router.post("/kelas/create", postKelas);
-router.put("/kelas/update/:id", putKelas);
-router.delete("/kelas/delete/:id", deleteKelas);
+router.post("/kelas", verifyToken, getKelas);
+router.get("/kelas/:id", verifyToken, getKelasbyId);
+router.post("/kelas/create", verifyToken, postKelas);
+router.put("/kelas/update/:id", verifyToken, putKelas);
+router.delete("/kelas/delete/:id", verifyToken, deleteKelas);
 
 //CRUD Operator
 router.post("/operator", getOperator);

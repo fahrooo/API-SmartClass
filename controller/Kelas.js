@@ -28,6 +28,10 @@ export const getKelas = async (req, res) => {
       include: [Units],
       offset: offset,
       limit: limit,
+      order: [
+        ["id_unit", "ASC"],
+        ["nama", "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -62,6 +66,10 @@ export const getKelas = async (req, res) => {
       include: [Units],
       offset: offset,
       limit: limit,
+      order: [
+        ["id_unit", "ASC"],
+        ["nama", "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -96,6 +104,10 @@ export const getKelas = async (req, res) => {
       include: [Units],
       offset: offset,
       limit: limit,
+      order: [
+        ["id_unit", "ASC"],
+        ["nama", "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -123,6 +135,10 @@ export const getKelas = async (req, res) => {
       include: [Units],
       offset: offset,
       limit: limit,
+      order: [
+        ["id_unit", "ASC"],
+        ["nama", "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -137,6 +153,28 @@ export const getKelas = async (req, res) => {
       totalPage: kelas.length ? totalPage : null,
     });
   }
+};
+
+export const getKelasbyId = async (req, res) => {
+  const id = req.params.id;
+
+  Kelas.belongsTo(Units, { foreignKey: "id_unit" });
+  Units.hasMany(Kelas, { foreignKey: "id_unit" });
+
+  const checkkelasById = await Kelas.findByPk(id, { include: [Units] });
+
+  if (checkkelasById === null) {
+    return res.status(200).json({
+      status: 404,
+      message: "User not found",
+    });
+  }
+
+  return res.status(200).json({
+    status: 200,
+    message: "User found",
+    data: checkkelasById,
+  });
 };
 
 export const postKelas = async (req, res) => {
