@@ -248,42 +248,6 @@ export const putKelas = async (req, res) => {
     });
   }
 
-  const checkNamaKelas = await Kelas.findAll({
-    where: {
-      [Op.and]: [
-        {
-          nama: nama,
-        },
-        { id_unit: id_unit },
-      ],
-    },
-  });
-
-  const checkTopicKelas = await Kelas.findAll({
-    where: {
-      [Op.and]: [
-        {
-          nama: nama,
-        },
-        { id_unit: id_unit },
-      ],
-    },
-  });
-
-  if (checkNamaKelas.length > 0) {
-    return res.status(200).json({
-      status: 400,
-      message: "Nama already exist",
-    });
-  }
-
-  if (checkTopicKelas.length > 0) {
-    return res.status(200).json({
-      status: 400,
-      message: "Topic already exist",
-    });
-  }
-
   try {
     const kelas = await Kelas.update(
       {
