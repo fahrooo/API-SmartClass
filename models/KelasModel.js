@@ -1,7 +1,6 @@
 import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
 
-
 const { DataTypes } = Sequelize;
 
 const Kelas = db.define(
@@ -16,6 +15,9 @@ const Kelas = db.define(
     topic: {
       type: DataTypes.STRING,
     },
+    code_akses: {
+      type: DataTypes.STRING,
+    },
   },
   {
     freezeTableName: true,
@@ -25,5 +27,5 @@ const Kelas = db.define(
 export default Kelas;
 
 (async () => {
-    await db.sync();
-  })();
+  await db.sync();
+})();

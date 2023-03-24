@@ -27,9 +27,6 @@ const Booking = db.define(
     keterangan: {
       type: DataTypes.TEXT,
     },
-    code_akses: {
-      type: DataTypes.STRING,
-    },
   },
   {
     freezeTableName: true,
