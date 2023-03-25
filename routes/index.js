@@ -60,6 +60,7 @@ import {
   getBooking,
   postBooking,
   putBooking,
+  scheduleBooking,
 } from "../controller/booking";
 
 import { verifyToken } from "../middleware/VerifyToken.js";
@@ -148,6 +149,7 @@ router.post("/booking", getBooking);
 router.post("/booking/create", postBooking);
 router.put("/booking/update/:id", putBooking);
 router.delete("/booking/delete/:id", deleteBooking);
+router.post("/schedulebooking", scheduleBooking);
 
 //MQTT
 router.post("/mqtt/publish", verifyToken, publishMessage);

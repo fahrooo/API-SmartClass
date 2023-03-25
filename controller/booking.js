@@ -1,7 +1,8 @@
-import { Op } from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import Booking from "../models/BookingModel";
 import Kelas from "../models/KelasModel";
 import Units from "../models/UnitsModel";
+import db from "../config/Database.js";
 
 export const getBooking = async (req, res) => {
   const {
@@ -377,6 +378,31 @@ export const deleteBooking = async (req, res) => {
     return res.status(200).json({
       status: 200,
       message: "Deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      message: error,
+    });
+  }
+};
+
+export const scheduleBooking = async (req, res) => {
+  const { id_kelas, waktu_pemesanan } = req.body;
+
+  try {
+    const booking = await db.query(
+      `SELECT * FROM (SELECT waktu.id, to_char(time_start,'HH24:MI') as time_start, to_char(time_end,'HH24:MI') as time_end, booking.id as id_booking, id_user, id_kelas, id_waktu, waktu_pemesanan, is_booking, status, keterangan, booking."createdAt" FROM "waktu" JOIN booking ON booking.id_waktu=waktu."id" WHERE id_kelas = ${id_kelas} AND date(waktu_pemesanan) = '${waktu_pemesanan}'
+      UNION ALL
+      SELECT waktu.id, to_char(time_start,'HH24:MI') as time_start, to_char(time_end,'HH24:MI') as time_end, booking.id as id_booking, id_user, id_kelas, id_waktu, waktu_pemesanan, is_booking, status, keterangan, booking."createdAt" FROM "waktu" LEFT JOIN booking ON booking.id_waktu=NULL WHERE waktu.id NOT IN (SELECT waktu.id FROM "waktu" JOIN booking ON booking.id_waktu=waktu."id" WHERE id_kelas = ${id_kelas} AND date(waktu_pemesanan) = '${waktu_pemesanan}')) AS waktu_booking ORDER BY id ASC`,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    return res.status(200).json({
+      status: 200,
+      data: booking,
     });
   } catch (error) {
     return res.status(500).json({
