@@ -34,6 +34,7 @@ import {
 import {
   deleteOperator,
   getOperator,
+  getOperatorbyId,
   postOperator,
   putOperator,
 } from "../controller/operatorKelas.js";
@@ -115,10 +116,11 @@ router.put("/kelas/update/:id", verifyToken, putKelas);
 router.delete("/kelas/delete/:id", verifyToken, deleteKelas);
 
 //CRUD Operator
-router.post("/operator", getOperator);
-router.post("/operator/create", postOperator);
-router.put("/operator/update/:id", putOperator);
-router.delete("/operator/delete/:id", deleteOperator);
+router.post("/operator", verifyToken, getOperator);
+router.get("/operator/:id", verifyToken, getOperatorbyId);
+router.post("/operator/create", verifyToken, postOperator);
+router.put("/operator/update/:id", verifyToken, putOperator);
+router.delete("/operator/delete/:id", verifyToken, deleteOperator);
 
 //CRUD Perangkat
 router.post("/perangkat", getPerangkat);

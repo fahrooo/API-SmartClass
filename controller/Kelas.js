@@ -166,13 +166,13 @@ export const getKelasbyId = async (req, res) => {
   if (checkkelasById === null) {
     return res.status(200).json({
       status: 404,
-      message: "User not found",
+      message: "Kelas not found",
     });
   }
 
   return res.status(200).json({
     status: 200,
-    message: "User found",
+    message: "Kelas found",
     data: checkkelasById,
   });
 };

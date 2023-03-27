@@ -58,6 +58,10 @@ export const getOperator = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
+      order: [
+        ["id_user", "ASC"],
+        ["id_kelas", "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -106,6 +110,10 @@ export const getOperator = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
+      order: [
+        ["id_user", "ASC"],
+        ["id_kelas", "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -158,6 +166,10 @@ export const getOperator = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
+      order: [
+        ["id_user", "ASC"],
+        ["id_kelas", "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -204,6 +216,10 @@ export const getOperator = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
+      order: [
+        ["id_user", "ASC"],
+        ["id_kelas", "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -250,6 +266,10 @@ export const getOperator = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
+      order: [
+        ["id_user", "ASC"],
+        ["id_kelas", "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -294,6 +314,10 @@ export const getOperator = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
+      order: [
+        ["id_user", "ASC"],
+        ["id_kelas", "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -308,6 +332,43 @@ export const getOperator = async (req, res) => {
       totalPage: operator.length ? totalPage : null,
     });
   }
+};
+
+export const getOperatorbyId = async (req, res) => {
+  const id = req.params.id;
+
+  Kelas.hasMany(OperatorKelas, { foreignKey: "id_kelas" });
+  OperatorKelas.belongsTo(Kelas, { foreignKey: "id_kelas" });
+  Users.hasMany(OperatorKelas, { foreignKey: "id_user" });
+  OperatorKelas.belongsTo(Users, { foreignKey: "id_user" });
+  Units.hasMany(Kelas, { foreignKey: "id_unit" });
+  Kelas.belongsTo(Units, { foreignKey: "id_unit" });
+
+  const checkOperatorById = await OperatorKelas.findByPk(id, {
+    include: [
+      {
+        model: Kelas,
+        include: [Units],
+      },
+      {
+        model: Users,
+        attributes: ["id", "nama"],
+      },
+    ],
+  });
+
+  if (checkOperatorById === null) {
+    return res.status(200).json({
+      status: 404,
+      message: "Operator not found",
+    });
+  }
+
+  return res.status(200).json({
+    status: 200,
+    message: "Operator found",
+    data: checkOperatorById,
+  });
 };
 
 export const postOperator = async (req, res) => {
