@@ -129,10 +129,10 @@ router.put("/perangkat/update/:id", putPerangkat);
 router.delete("/perangkat/delete/:id", deletePerangkat);
 
 //CRUD Datastream
-router.post("/datastream", getDatastream);
-router.post("/datastream/create", postDatastream);
-router.put("/datastream/update/:id", putDatastream);
-router.delete("/datastream/delete/:id", deleteDatastream);
+router.post("/datastream", verifyToken, getDatastream);
+router.post("/datastream/create", verifyToken, postDatastream);
+router.put("/datastream/update/:id", verifyToken, putDatastream);
+router.delete("/datastream/delete/:id", verifyToken, deleteDatastream);
 
 //CRUD Perangkat Kelas
 router.post("/perangkatkelas", getPerangkatKelas);
