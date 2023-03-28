@@ -137,6 +137,30 @@ export const getDatastream = async (req, res) => {
   }
 };
 
+export const getDatastreambyId = async (req, res) => {
+  const id = req.params.id;
+
+  Datastream.belongsTo(Perangkat, { foreignKey: "id_perangkat" });
+  Perangkat.hasMany(Datastream, { foreignKey: "id_perangkat" });
+
+  const checkDatastreamById = await Datastream.findByPk(id, {
+    include: [Perangkat],
+  });
+
+  if (checkDatastreamById === null) {
+    return res.status(200).json({
+      status: 404,
+      message: "Datastream not found",
+    });
+  }
+
+  return res.status(200).json({
+    status: 200,
+    message: "Datastream found",
+    data: checkDatastreamById,
+  });
+};
+
 export const postDatastream = async (req, res) => {
   const {
     id_perangkat,
@@ -201,24 +225,6 @@ export const putDatastream = async (req, res) => {
     min_value,
   } = req.body;
 
-  const checkNamaDatastream = await Datastream.findAll({
-    where: {
-      [Op.and]: [
-        {
-          nama: nama,
-        },
-        { id_perangkat: id_perangkat },
-      ],
-    },
-  });
-
-  if (checkNamaDatastream.length > 0) {
-    return res.status(200).json({
-      status: 400,
-      message: "Datastream already exist",
-    });
-  }
-
   try {
     const datastream = await Datastream.update(
       {
@@ -250,30 +256,30 @@ export const putDatastream = async (req, res) => {
 };
 
 export const deleteDatastream = async (req, res) => {
-    const id = req.params.id;
-  
-    try {
-      const datastreambyid = await Datastream.findAll({
+  const id = req.params.id;
+
+  try {
+    const datastreambyid = await Datastream.findAll({
+      where: {
+        id: id,
+      },
+    });
+
+    if (datastreambyid.length > 0) {
+      const datastream = await Datastream.destroy({
         where: {
           id: id,
         },
       });
-  
-      if (datastreambyid.length > 0) {
-        const datastream = await Datastream.destroy({
-          where: {
-            id: id,
-          },
-        });
-  
-        res.status(200).json({
-          status: 200,
-          message: "Deleted successfully",
-        });
-      } else {
-        res.status(404).json({ status: 404, message: "Datastream not found" });
-      }
-    } catch (error) {
-      res.status(200).json({ status: 400, message: "Deleted failed" });
+
+      res.status(200).json({
+        status: 200,
+        message: "Deleted successfully",
+      });
+    } else {
+      res.status(404).json({ status: 404, message: "Datastream not found" });
     }
-  };
+  } catch (error) {
+    res.status(200).json({ status: 400, message: "Deleted failed" });
+  }
+};

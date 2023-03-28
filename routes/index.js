@@ -41,6 +41,7 @@ import {
 import {
   deleteDatastream,
   getDatastream,
+  getDatastreambyId,
   postDatastream,
   putDatastream,
 } from "../controller/datastream.js";
@@ -130,6 +131,7 @@ router.delete("/perangkat/delete/:id", deletePerangkat);
 
 //CRUD Datastream
 router.post("/datastream", verifyToken, getDatastream);
+router.get("/datastream/:id", verifyToken, getDatastreambyId);
 router.post("/datastream/create", verifyToken, postDatastream);
 router.put("/datastream/update/:id", verifyToken, putDatastream);
 router.delete("/datastream/delete/:id", verifyToken, deleteDatastream);
