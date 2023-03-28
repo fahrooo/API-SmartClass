@@ -319,6 +319,45 @@ export const getPerangkatKelas = async (req, res) => {
   }
 };
 
+export const getPerangkatKelasbyId = async (req, res) => {
+  const id = req.params.id;
+
+  Kelas.hasMany(PerangkatKelas, { foreignKey: "id_kelas" });
+  PerangkatKelas.belongsTo(Kelas, { foreignKey: "id_kelas" });
+  Datastream.hasMany(PerangkatKelas, { foreignKey: "id_datastream" });
+  PerangkatKelas.belongsTo(Datastream, { foreignKey: "id_datastream" });
+  Units.hasMany(Kelas, { foreignKey: "id_unit" });
+  Kelas.belongsTo(Units, { foreignKey: "id_unit" });
+  Perangkat.hasMany(Datastream, { foreignKey: "id_perangkat" });
+  Datastream.belongsTo(Perangkat, { foreignKey: "id_perangkat" });
+
+  const checkPerangkatKelasById = await PerangkatKelas.findByPk(id, {
+    include: [
+      {
+        model: Kelas,
+        include: [Units],
+      },
+      {
+        model: Datastream,
+        include: [Perangkat],
+      },
+    ],
+  });
+
+  if (checkPerangkatKelasById === null) {
+    return res.status(200).json({
+      status: 404,
+      message: "Perangkat Kelas not found",
+    });
+  }
+
+  return res.status(200).json({
+    status: 200,
+    message: "Perangkat Kelas found",
+    data: checkPerangkatKelasById,
+  });
+};
+
 export const postPerangkatKelas = async (req, res) => {
   const { id_kelas, id_datastream, nama } = req.body;
 

@@ -48,6 +48,7 @@ import {
 import {
   deletePerangkatKelas,
   getPerangkatKelas,
+  getPerangkatKelasbyId,
   postPerangkatKelas,
   putPerangkatKelas,
 } from "../controller/perangkatKelas.js";
@@ -137,10 +138,11 @@ router.put("/datastream/update/:id", verifyToken, putDatastream);
 router.delete("/datastream/delete/:id", verifyToken, deleteDatastream);
 
 //CRUD Perangkat Kelas
-router.post("/perangkatkelas", getPerangkatKelas);
-router.post("/perangkatkelas/create", postPerangkatKelas);
-router.put("/perangkatkelas/update/:id", putPerangkatKelas);
-router.delete("/perangkatkelas/delete/:id", deletePerangkatKelas);
+router.post("/perangkatkelas", verifyToken, getPerangkatKelas);
+router.get("/perangkatkelas/:id", verifyToken, getPerangkatKelasbyId);
+router.post("/perangkatkelas/create", verifyToken, postPerangkatKelas);
+router.put("/perangkatkelas/update/:id", verifyToken, putPerangkatKelas);
+router.delete("/perangkatkelas/delete/:id", verifyToken, deletePerangkatKelas);
 
 //CRUD Waktu
 router.get("/waktu", getWaktu);
