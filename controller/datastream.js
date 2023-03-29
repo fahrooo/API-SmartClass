@@ -34,6 +34,7 @@ export const getDatastream = async (req, res) => {
       include: [Perangkat],
       offset: offset,
       limit: limit,
+      order: [["id_perangkat", "ASC"]],
     });
 
     res.status(200).json({
@@ -64,6 +65,7 @@ export const getDatastream = async (req, res) => {
       include: [Perangkat],
       offset: offset,
       limit: limit,
+      order: [["id_perangkat", "ASC"]],
     });
 
     res.status(200).json({
@@ -94,6 +96,7 @@ export const getDatastream = async (req, res) => {
       include: [Perangkat],
       offset: offset,
       limit: limit,
+      order: [["id_perangkat", "ASC"]],
     });
 
     res.status(200).json({
@@ -121,6 +124,7 @@ export const getDatastream = async (req, res) => {
       include: [Perangkat],
       offset: offset,
       limit: limit,
+      order: [["id_perangkat", "ASC"]],
     });
 
     res.status(200).json({

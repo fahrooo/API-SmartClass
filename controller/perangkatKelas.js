@@ -59,6 +59,7 @@ export const getPerangkatKelas = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
+      order: [["id_kelas", "ASC"]],
     });
 
     res.status(200).json({
@@ -111,6 +112,7 @@ export const getPerangkatKelas = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
+      order: [["id_kelas", "ASC"]],
     });
 
     res.status(200).json({
@@ -163,6 +165,7 @@ export const getPerangkatKelas = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
+      order: [["id_kelas", "ASC"]],
     });
 
     res.status(200).json({
@@ -213,6 +216,7 @@ export const getPerangkatKelas = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
+      order: [["id_kelas", "ASC"]],
     });
 
     res.status(200).json({
@@ -259,6 +263,7 @@ export const getPerangkatKelas = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
+      order: [["id_kelas", "ASC"]],
     });
 
     res.status(200).json({
@@ -303,6 +308,7 @@ export const getPerangkatKelas = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
+      order: [["id_kelas", "ASC"]],
     });
 
     res.status(200).json({
