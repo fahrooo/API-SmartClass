@@ -4,6 +4,7 @@ import Kelas from "../models/KelasModel";
 import PerangkatKelas from "../models/PerangkatKelasModel";
 import Perangkat from "../models/PerangkatModel";
 import Units from "../models/UnitsModel";
+import db from "../config/Database";
 
 export const getPerangkatKelas = async (req, res) => {
   const { filter_unit, filter_nama, filter_kelas, nama, id_kelas, id_unit } =
@@ -59,7 +60,10 @@ export const getPerangkatKelas = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
-      order: [["id_kelas", "ASC"]],
+      order: [
+        ["id_kelas", "ASC"],
+        [db.col("id_perangkat"), "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -112,7 +116,10 @@ export const getPerangkatKelas = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
-      order: [["id_kelas", "ASC"]],
+      order: [
+        ["id_kelas", "ASC"],
+        [db.col("id_perangkat"), "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -165,7 +172,10 @@ export const getPerangkatKelas = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
-      order: [["id_kelas", "ASC"]],
+      order: [
+        ["id_kelas", "ASC"],
+        [db.col("id_perangkat"), "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -216,7 +226,10 @@ export const getPerangkatKelas = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
-      order: [["id_kelas", "ASC"]],
+      order: [
+        ["id_kelas", "ASC"],
+        [db.col("id_perangkat"), "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -263,7 +276,10 @@ export const getPerangkatKelas = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
-      order: [["id_kelas", "ASC"]],
+      order: [
+        ["id_kelas", "ASC"],
+        [db.col("id_perangkat"), "ASC"],
+      ],
     });
 
     res.status(200).json({
@@ -308,7 +324,10 @@ export const getPerangkatKelas = async (req, res) => {
       ],
       offset: offset,
       limit: limit,
-      order: [["id_kelas", "ASC"]],
+      order: [
+        ["id_kelas", "ASC"],
+        [db.col("id_perangkat"), "ASC"],
+      ],
     });
 
     res.status(200).json({
