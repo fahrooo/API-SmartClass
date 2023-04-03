@@ -300,3 +300,27 @@ export const deleteKelas = async (req, res) => {
     res.status(200).json({ status: 400, message: "Deleted failed" });
   }
 };
+
+export const updateCodeAkses = async (req, res) => {
+  const { id, code_akses } = req.body;
+
+  try {
+    const kelas = await Kelas.update(
+      {
+        code_akses: code_akses,
+      },
+      {
+        where: { id: id },
+      }
+    );
+    return res.status(200).json({
+      status: 200,
+      message: "Updated code akses successfully",
+    });
+  } catch (error) {
+    return res.status(200).json({
+      status: 400,
+      message: "Updated code akses failed",
+    });
+  }
+};

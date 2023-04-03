@@ -15,6 +15,7 @@ import {
   Me,
   getUsersbyId,
   resetPassword,
+  sendVerifyEmailAuth,
 } from "../controller/Users.js";
 import {
   deleteUnits,
@@ -30,6 +31,7 @@ import {
   getKelasbyId,
   postKelas,
   putKelas,
+  updateCodeAkses,
 } from "../controller/Kelas.js";
 import {
   deleteOperator,
@@ -94,6 +96,7 @@ router.post("/sendverifyemail", sendVerifyEmail);
 router.post("/checkverifyemail", checkVerifyEmail);
 router.post("/updateemailverify", updateEmail);
 router.post("/updatepassword", updatePassword);
+router.post("/sendverifyemailauth", verifyToken, sendVerifyEmailAuth);
 
 //CRUD Users
 router.post("/users", verifyToken, getUsers);
@@ -117,6 +120,7 @@ router.get("/kelas/:id", verifyToken, getKelasbyId);
 router.post("/kelas/create", verifyToken, postKelas);
 router.put("/kelas/update/:id", verifyToken, putKelas);
 router.delete("/kelas/delete/:id", verifyToken, deleteKelas);
+router.post("/updatecodeakses", verifyToken, updateCodeAkses);
 
 //CRUD Operator
 router.post("/operator", verifyToken, getOperator);
