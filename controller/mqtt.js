@@ -1,16 +1,15 @@
 import * as mqtt from "mqtt";
 import dotenv from "dotenv";
 import { WebSocket } from "ws";
-
-dotenv.config();
+import Mqtt from "../models/MqttModel";
 
 export const publishMessage = async (req, res) => {
   const topic = req.body.topic;
   const message = req.body.message;
-  console.log(message);
 
   try {
-    const url = process.env.MQTT_HOST;
+    const serverMqtt = await Mqtt.findAll();
+    const url = serverMqtt[0].nama;
     let client = mqtt.connect(url);
 
     await client.on("connect", function () {
@@ -31,7 +30,8 @@ export const subscribeMessage = async (req, res) => {
   const topic = req.body.topic;
 
   try {
-    const url = process.env.MQTT_HOST;
+    const serverMqtt = await Mqtt.findAll();
+    const url = serverMqtt[0].nama;
     let client = mqtt.connect(url);
 
     await client.on("connect", () => {

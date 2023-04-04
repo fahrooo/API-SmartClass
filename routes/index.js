@@ -168,6 +168,5 @@ router.post("/schedulebooking", scheduleBooking);
 //MQTT
 router.post("/mqtt/publish", verifyToken, publishMessage);
 router.post("/mqtt/subscribe", subscribeMessage);
-router.post("/websocket/sendbufferaudio", sendBufferAudio);
 
 export default router;
