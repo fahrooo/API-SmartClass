@@ -653,6 +653,24 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
+export const checkPassword = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await Users.findAll({
+    where: {
+      email: email,
+    },
+  });
+
+  const match = await bcrypt.compare(password, user[0].password);
+
+  if (!match) {
+    return res.status(200).json({ status: 400, message: "Wrong Password" });
+  }
+
+  return res.status(200).json({ status: 200, message: "Password Correct" });
+};
+
 export const updatePassword = async (req, res) => {
   const { email, password } = req.body;
 

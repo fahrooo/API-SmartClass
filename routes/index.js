@@ -16,6 +16,7 @@ import {
   getUsersbyId,
   resetPassword,
   sendVerifyEmailAuth,
+  checkPassword,
 } from "../controller/Users.js";
 import {
   deleteUnits,
@@ -96,6 +97,7 @@ router.post("/sendverifyemail", sendVerifyEmail);
 router.post("/checkverifyemail", checkVerifyEmail);
 router.post("/updateemailverify", updateEmail);
 router.post("/updatepassword", updatePassword);
+router.post("/checkpassword", verifyToken, checkPassword);
 router.post("/sendverifyemailauth", verifyToken, sendVerifyEmailAuth);
 
 //CRUD Users
