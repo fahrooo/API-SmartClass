@@ -3,6 +3,29 @@ import dotenv from "dotenv";
 import { WebSocket } from "ws";
 import Mqtt from "../models/MqttModel";
 
+export const getMqtt = async (req, res) => {
+  const serverMqtt = await Mqtt.findAll();
+
+  if (serverMqtt.length > 0) {
+    return res.status(200).json({
+      status: 200,
+      data: serverMqtt[0],
+    });
+  }
+};
+
+export const putMqtt = async (req, res) => {
+  const id = req.params.id;
+  const { nama } = req.body;
+
+  const serverMqtt = await Mqtt.update({ nama: nama }, { where: { id: id } });
+
+  return res.status(200).json({
+    status: 200,
+    message: "MQTT update successfully",
+  });
+};
+
 export const publishMessage = async (req, res) => {
   const topic = req.body.topic;
   const message = req.body.message;

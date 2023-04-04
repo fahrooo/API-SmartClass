@@ -73,7 +73,9 @@ import {
 import { verifyToken } from "../middleware/VerifyToken.js";
 import { refreshToken } from "../controller/RefreshToken.js";
 import {
+  getMqtt,
   publishMessage,
+  putMqtt,
   sendBufferAudio,
   subscribeMessage,
 } from "../controller/mqtt.js";
@@ -166,6 +168,8 @@ router.post("/schedulekelas", scheduleKelas);
 router.post("/schedulebooking", scheduleBooking);
 
 //MQTT
+router.get("/mqtt", verifyToken, getMqtt);
+router.put("/mqtt/update/:id", verifyToken, putMqtt);
 router.post("/mqtt/publish", verifyToken, publishMessage);
 router.post("/mqtt/subscribe", subscribeMessage);
 
