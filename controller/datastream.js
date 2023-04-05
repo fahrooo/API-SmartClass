@@ -230,6 +230,23 @@ export const putDatastream = async (req, res) => {
   } = req.body;
 
   try {
+    const checkNamaDatastream = await Datastream.findAll({
+      where: {
+        [Op.and]: [
+          {
+            nama: nama,
+          },
+          { id_perangkat: id_perangkat },
+        ],
+      },
+    });
+
+    if (checkNamaDatastream.length > 0) {
+      return res.status(200).json({
+        status: 400,
+        message: "Datastream already exist",
+      });
+    }
     const datastream = await Datastream.update(
       {
         id_perangkat: id_perangkat,
