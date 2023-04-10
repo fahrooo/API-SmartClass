@@ -30,6 +30,7 @@ import {
   deleteKelas,
   getKelas,
   getKelasbyId,
+  matchCodeAkses,
   postKelas,
   putKelas,
   updateCodeAkses,
@@ -125,6 +126,7 @@ router.post("/kelas/create", verifyToken, postKelas);
 router.put("/kelas/update/:id", verifyToken, putKelas);
 router.delete("/kelas/delete/:id", verifyToken, deleteKelas);
 router.post("/updatecodeakses", verifyToken, updateCodeAkses);
+router.post("/matchcodeakses", verifyToken, matchCodeAkses);
 
 //CRUD Operator
 router.post("/operator", verifyToken, getOperator);

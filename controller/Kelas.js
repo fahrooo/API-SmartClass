@@ -324,3 +324,21 @@ export const updateCodeAkses = async (req, res) => {
     });
   }
 };
+
+export const matchCodeAkses = async (req, res) => {
+  const { id, code_akses } = req.body;
+
+  const kelas = await Kelas.findByPk(id);
+
+  if (kelas.code_akses === code_akses) {
+    return res.status(200).json({
+      status: 200,
+      message: "Code askes matched",
+    });
+  } else {
+    return res.status(200).json({
+      status: 400,
+      message: "Code akses not matched",
+    });
+  }
+};
