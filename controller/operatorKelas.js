@@ -32,7 +32,12 @@ export const getOperator = async (req, res) => {
         },
         {
           model: Users,
-          where: { nama: { [Op.substring]: nama } },
+          where: {
+            [Op.and]: [
+              { nama: { [Op.substring]: nama } },
+              { role: "operator" },
+            ],
+          },
           attributes: ["id", "nama"],
         },
       ],
@@ -52,7 +57,12 @@ export const getOperator = async (req, res) => {
         },
         {
           model: Users,
-          where: { nama: { [Op.substring]: nama } },
+          where: {
+            [Op.and]: [
+              { nama: { [Op.substring]: nama } },
+              { role: "operator" },
+            ],
+          },
           attributes: ["id", "nama"],
         },
       ],
@@ -87,7 +97,12 @@ export const getOperator = async (req, res) => {
         },
         {
           model: Users,
-          where: { nama: { [Op.substring]: nama } },
+          where: {
+            [Op.and]: [
+              { nama: { [Op.substring]: nama } },
+              { role: "operator" },
+            ],
+          },
           attributes: ["id", "nama"],
         },
       ],
@@ -104,7 +119,12 @@ export const getOperator = async (req, res) => {
         },
         {
           model: Users,
-          where: { nama: { [Op.substring]: nama } },
+          where: {
+            [Op.and]: [
+              { nama: { [Op.substring]: nama } },
+              { role: "operator" },
+            ],
+          },
           attributes: ["id", "nama"],
         },
       ],
@@ -142,6 +162,7 @@ export const getOperator = async (req, res) => {
         },
         {
           model: Users,
+          where: { role: "operator" },
           attributes: ["id", "nama"],
         },
       ],
@@ -161,6 +182,7 @@ export const getOperator = async (req, res) => {
         },
         {
           model: Users,
+          where: { role: "operator" },
           attributes: ["id", "nama"],
         },
       ],
@@ -194,7 +216,12 @@ export const getOperator = async (req, res) => {
         },
         {
           model: Users,
-          where: { nama: { [Op.substring]: nama } },
+          where: {
+            [Op.and]: [
+              { nama: { [Op.substring]: nama } },
+              { role: "operator" },
+            ],
+          },
           attributes: ["id", "nama"],
         },
       ],
@@ -210,7 +237,12 @@ export const getOperator = async (req, res) => {
         },
         {
           model: Users,
-          where: { nama: { [Op.substring]: nama } },
+          where: {
+            [Op.and]: [
+              { nama: { [Op.substring]: nama } },
+              { role: "operator" },
+            ],
+          },
           attributes: ["id", "nama"],
         },
       ],
@@ -245,6 +277,7 @@ export const getOperator = async (req, res) => {
         },
         {
           model: Users,
+          where: { role: "operator" },
           attributes: ["id", "nama"],
         },
       ],
@@ -261,6 +294,7 @@ export const getOperator = async (req, res) => {
         },
         {
           model: Users,
+          where: { role: "operator" },
           attributes: ["id", "nama"],
         },
       ],
@@ -294,6 +328,7 @@ export const getOperator = async (req, res) => {
         },
         {
           model: Users,
+          where: { role: "operator" },
           attributes: ["id", "nama"],
         },
       ],
@@ -309,6 +344,7 @@ export const getOperator = async (req, res) => {
         },
         {
           model: Users,
+          where: { role: "operator" },
           attributes: ["id", "nama"],
         },
       ],
