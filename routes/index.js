@@ -90,7 +90,7 @@ import {
 const router = express.Router();
 
 //Authitentication
-router.get("/me/:id", verifyToken, Me);
+router.get("/me/:id", Me);
 router.post("/register", Register);
 router.post("/login", Login);
 router.get("/token", refreshToken);
